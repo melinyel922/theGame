@@ -501,7 +501,7 @@
 #include <fstream> //read and write files
 #include <string> //strings and such
 #include <sstream>
-#include "dude.h"
+
 
 //mobileProblem
 //#include "src/global.hpp"
@@ -510,13 +510,13 @@
 
 //mobileProblem
 #include "astar.cpp"
-#include "dude.cpp"
+#include "dude2.cpp"
 #include "map.cpp"
 
 
 using namespace std;
 
-bool const FAST_START = true;
+bool const FAST_START = false;
 
 bool running = 1; //this says the game is on
 int playerInfo[20][25]; //first dimension chooses person 0-player1 1-5-player1's team 6-player2 7-20-player2's-team
@@ -525,6 +525,7 @@ int playerInfo[20][25]; //first dimension chooses person 0-player1 1-5-player1's
 //mobileProblem
 int map[100][100][3];//first two dimensions, x and y coords, third dimension [0-person on it or not and who, 1-elevation, 2-map condition
 mappy mainMap;
+int worldSeed = 0;
 int teamSize1 = 0;
 int teamSize2 = 0;
 dude dude[20];
@@ -9823,7 +9824,9 @@ for ( k = teamSize1 + 1; k <= teamSize1 + teamSize2; k++ )
     assignStartingMana();
     assignVariousOtherStats();
     
-    
+    if (worldSeed > 0) {
+		srand (worldSeed);
+	}
     mainMap.addGrass(30,27,7,2);
     mainMap.addTrees(5,9);
     mainMap.addCastles(1000);
@@ -9832,7 +9835,9 @@ for ( k = teamSize1 + 1; k <= teamSize1 + teamSize2; k++ )
     mainMap.addArcane(40,8,1,rd6() * 10);
     mainMap.addGold(5,50,10);
     mainMap.addSiegeWeapons(1);
-    
+    if (worldSeed > 0) {
+		srand (time(NULL));
+	}
     
     placement();
     
@@ -9846,32 +9851,61 @@ for ( k = teamSize1 + 1; k <= teamSize1 + teamSize2; k++ )
     
     cout << endl;
     if (bonusOptions) {
+		cout << "What world seed do you want to use?\n(type \'0\' to not use a world seed)\n";
+		
+		if (!FAST_START)
+            cin >> worldSeed;
+        else
+            worldSeed = 0;
+		
 		
 		cout << "Do you want the game to be more random?\n0: No\n1: Yes\n";
-		cin >> moreRandomTeam1;
+		if (!FAST_START)
+            cin >> moreRandomTeam1;
+        else
+            moreRandomTeam1 = 0;
+		
 		
 		if (moreRandomTeam1 == 1) { 
 			int randomLocation1 = 0, randomLocation2 = 0;
 			cout << teamNames[1] << " do you want your team stats more random?\n0: No\n1: Yes\n"; 
-			cin >> moreRandomTeam1;  
+			if (!FAST_START)
+				cin >> moreRandomTeam1;
+			else
+				moreRandomTeam1 = 0;	
+			
 			cout <<  teamNames[2] << " do you want your team stats more random?\n0: No\n1: Yes\n"; 
-			cin >> moreRandomTeam2;
+			if (!FAST_START)
+				cin >> moreRandomTeam2;
+			else
+				moreRandomTeam2 = 0;
 			moreRandom(); 
 			
 			
 			cout << teamNames[1] <<  " do you want your character locations to be more random?\n0: No\n1: Yes\n";
-			cin >> randomLocation1;
+			if (!FAST_START)
+				cin >> randomLocation1;
+			else
+				randomLocation1 = 0;
+			
 			cout << teamNames[2] <<  " do you want your character locations to be more random?\n0: No\n1: Yes\n";
-			cin >> randomLocation2;
+			if (!FAST_START)
+				cin >> randomLocation1;
+			else
+				randomLocation1 = 0;
 			
 			playerPlopper(randomLocation1,randomLocation2);
 			
 		}     
 		
 		
-		cout << "Do you want everyone to start on the field?\n0: No\n1: Yes\n";
-		cin >> staggerStartSpread[0];
-		if (staggerStartSpread[0] != 1) {
+		cout << "Do you want some people to enter the battle later?\n0: No\n1: Yes\n";
+		if (!FAST_START)
+				cin >> staggerStartSpread[0];
+			else
+				staggerStartSpread[0] = 0;
+		
+		if (staggerStartSpread[0] = 1) {
 			cout << endl << teamNames[1] << " how many from team 1 should start on the field?\n";
 			cin >> staggerStartBeginningPeople[1];
 			if (staggerStartBeginningPeople[1] + 1 <= teamSize1) {
@@ -9895,13 +9929,21 @@ for ( k = teamSize1 + 1; k <= teamSize1 + teamSize2; k++ )
 		}
 		
 		cout << "Do you want there to be more dramatic pauses?\n0: No\n1: Yes\n";
-		cin >> moreDrama;
+		if (!FAST_START)
+				cin >> moreDrama;
+			else
+				moreDrame = 0;
+		
 		
 		
 		bool jumpUp = 0;
 		int jumpUpLevel = 0;
 		cout << "Do you want people to skip up some levels?\n0: No\n1: Yes\n";
-		cin >> jumpUp;
+		if (!FAST_START)
+				cin >> jumpUp;
+			else
+				jumpUp = 0;
+		
 		
 		if (jumpUp) {
 			for (assignGuy=1; assignGuy <= teamSize1 + teamSize2; assignGuy++) {
