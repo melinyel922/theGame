@@ -9932,7 +9932,7 @@ for ( k = teamSize1 + 1; k <= teamSize1 + teamSize2; k++ )
 		if (!FAST_START)
 				cin >> moreDrama;
 			else
-				moreDrame = 0;
+				moreDrama = 0;
 		
 		
 		
