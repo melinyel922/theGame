@@ -1,3 +1,4 @@
+
 class siegeWeapon {
 	public:
 	int attack, defense, health, range, accuracy, move, reloadTime, reloadCoolDown, weaponType;
