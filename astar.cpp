@@ -11,8 +11,8 @@
 #include <ctime>
 using namespace std;
 
-const int n=100; // horizontal size of the Map
-const int m=100; // vertical size size of the Map
+const int n=150; // horizontal size of the Map
+const int m=150; // vertical size size of the Map
 static int Map[n][m];
 static int elevationMap[n][m];
 static int closed_nodes_Map[n][m]; // Map of closed (tried-out) nodes
@@ -35,17 +35,17 @@ class node
     int level;
     // priority=level+remaining distance estimate
     int priority;  // smaller: higher priority
-    int elevation;
+    
 
     public:
-        node(int xp, int yp, int d, int p, int e) 
-            {xPos=xp; yPos=yp; level=d; priority=p; elevation=e;}
+        node(int xp, int yp, int d, int p) 
+            {xPos=xp; yPos=yp; level=d; priority=p;}
     
         int getxPos() const {return xPos;}
         int getyPos() const {return yPos;}
         int getLevel() const {return level;}
-        int getPriority() const {return priority - elevation;}
-		int getElevation() const {return elevation;}
+        int getPriority() const {return priority;}
+		
 
         void updatePriority(const int & xDest, const int & yDest)
         {
@@ -90,7 +90,7 @@ bool operator<(const node & a, const node & b)
 // A-star algorithm.
 // The route returned is a string of direction digits.
 string pathFind( const int & xStart, const int & yStart, 
-                 const int & xFinish, const int & yFinish,  int elevationMapFactor[n][m])
+                 const int & xFinish, const int & yFinish)
 {
     static priority_queue<node> pq[2]; // list of open (not-yet-tried) nodes
     static int pqi; // pq index
@@ -111,7 +111,7 @@ string pathFind( const int & xStart, const int & yStart,
     }
 
     // create the start node and push into list of open nodes
-    n0=new node(xStart, yStart, 0, 0, elevationMapFactor[xStart][yStart]);
+    n0=new node(xStart, yStart, 0, 0);
     n0->updatePriority(xFinish, yFinish);
     pq[pqi].push(*n0);
     open_nodes_Map[x][y]=n0->getPriority(); // mark it on the open nodes Map
@@ -122,7 +122,7 @@ string pathFind( const int & xStart, const int & yStart,
         // get the current node w/ the highest priority
         // from the list of open nodes
         n0=new node( pq[pqi].top().getxPos(), pq[pqi].top().getyPos(), 
-                     pq[pqi].top().getLevel(), pq[pqi].top().getPriority(), elevationMapFactor[pq[pqi].top().getxPos()][pq[pqi].top().getyPos()]);
+                     pq[pqi].top().getLevel(), pq[pqi].top().getPriority());
 
         x=n0->getxPos(); y=n0->getyPos();
 
@@ -164,7 +164,7 @@ string pathFind( const int & xStart, const int & yStart,
             {
                 // generate a child node
                 m0=new node( xdx, ydy, n0->getLevel(), 
-                             n0->getPriority(), n0->getElevation());
+                             n0->getPriority());
                 m0->nextLevel(i);
                 m0->updatePriority(xFinish, yFinish);
 
@@ -210,32 +210,33 @@ string pathFind( const int & xStart, const int & yStart,
         }
         delete n0; // garbage collection
     }
+    
     return ""; // no route found
 }
 
-bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[100][100], bool passableMap[100][100], int moveSpeed)
+bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][150], bool passableMap[150][150], int moveSpeed)
 {
     srand(time(NULL));
 
     // fill empty Maps
-    for(int y=0;y<m;y++)
+    for(int yCounter=0;yCounter<m;yCounter++)
     {
-        for(int x=0;x<n;x++) 
+        for(int xCounter=0;xCounter<n;xCounter++) 
         {
-			if (passableMap[x][y]) {
+			if (passableMap[xCounter][yCounter]) {
 				
-				Map[x][y]=0;
+				Map[xCounter][yCounter]=0;
 			}
 			else {
-				Map[x][y]=1;
+				Map[xCounter][yCounter]=1;
 			}
 		 }
     }
-    for(int y=0;y<m;y++)
+    for(int yCounter=0;yCounter<m;yCounter++)
     {
-        for(int x=0;x<n;x++) 
+        for(int xCounter=0;xCounter<n;xCounter++) 
         {
-			elevationMap[x][y] = importElevationMap[x][y];//sets the elevation map
+			elevationMap[xCounter][yCounter] = importElevationMap[xCounter][yCounter];//sets the elevation map
 		 }
     }
     
@@ -246,8 +247,8 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[100][1
 	
     // get the route
     
-    string route=pathFind(xA, yA, xB, yB, elevationMap);
-   
+    string route=pathFind(xA, yA, xB, yB);
+    
     // follow the route on the Map and display it 
     
     int moveCost = 0;
@@ -257,7 +258,7 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[100][1
     
     for (int i = 0; i < route.length(); i++) {
 			c =route.at(i);
-			j = atoi(&c);
+			istringstream(&c) >> j;
 			
 			if (j == 2 || j == 4 || j == 6  || j == 8 || j == 0) {
 				moveCost += 2;
@@ -267,7 +268,7 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[100][1
 				moveCost += 3;
 			}
 	}
-	int elevationChange = (elevationMap[xB][yB] - elevationMap[xA][yA]) * 2;
+	int elevationChange = (elevationMap[xB][yB] - elevationMap[xA][yA]) / 2;
 	if (elevationChange < 0) {
 		elevationChange = elevationChange / 4;
 	}
@@ -276,7 +277,7 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[100][1
 	//cout << "route is " << route << endl;
 	
     
-    if(route.length()>0 && moveCost <= moveSpeed  )
+    if(route.length() > 0 && moveCost <= moveSpeed  )
     {
 		
 		return true;
