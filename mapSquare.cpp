@@ -2,22 +2,42 @@
 #include "siegeWeapon.cpp"
 #include "ballista.cpp"
 
+
+
+
+
+
 using namespace std;
 
 class mapSquare {
 	protected:
 		int elevation, material, player, condition, conditionValue, gold;
 		int divine, arcane;
+		int divineUnderlay, arcaneUnderlay;
+		
 		bool hasSiegeWeapon;
 		siegeWeapon* weaponHere;
 		bool passable;
+		bool seeThrough;
 		bool hasCeiling;
 		string symbol, squareType;
+		
+		int castleSize;
+		equipment equipmentPile[10];
+		
+		
 		
 		
     
 	public:
-		mapSquare(): elevation(0), material(0), player(0), condition(0), conditionValue(0), passable(true), gold(0), symbol("."), squareType("normal"), hasSiegeWeapon(false) {}
+		
+		
+		
+		mapSquare(): elevation(0), material(0), player(0), condition(0), conditionValue(0), passable(true), seeThrough(true), gold(0), symbol("."), squareType("normal"), hasSiegeWeapon(false) {
+				for (int x = 0; x < 10; x++) {
+					equipmentPile[x].makeNull();
+				}
+			}
 	
 		mapSquare (int elev, int mat, int playr, int cond, int condVal, bool passy, int gol, string symb) {
 			elevation = elev;
@@ -31,21 +51,66 @@ class mapSquare {
 			hasCeiling = false;
 			divine = 0;
 			arcane = 0;
+			divineUnderlay = 0;
+			arcaneUnderlay = 0;
+			for (int x = 0; x < 10; x++) {
+				equipmentPile[x].makeNull();
+			}
 		}
 		
 		void printSquareInfo () {
-			cout << "Elevation: " << elevation << endl;
-			cout << "Arcane:    " << arcane << endl;
-			cout << "Divine:    " << divine << endl;
-			cout << "Material:  " << material << endl;
-			cout << "Player:    " << player << endl;
-			cout << "Condition: " << condition << "  Value: " << conditionValue << endl;
-			cout << "Passable:  " << passable << endl;
-			cout << "Gold:      " << gold << endl;
-			cout << "Symbol:    " << symbol << endl;
+			cout << "Elevation:  " << elevation << endl;
+			cout << "Arcane:     " << arcane << endl;
+			cout << "Divine:     " << divine << endl;
+			cout << "Material:   " << material << endl;
+			cout << "Player:     " << player << endl;
+			cout << "Condition:  " << condition << "  Value: " << conditionValue << endl;
+			cout << "Passable:   " << passable << endl;
+			cout << "See through:" << seeThrough << endl;
+			cout << "Gold:       " << gold << endl;
+			cout << "Symbol:     " << symbol << endl;
+			
+			cout << "Items here: \n";
+			viewEquipmentPile();
+			cout << endl;
+			
 			if (hasSiegeWeapon) {
 				cout << "\nSiege weapon info: \n";
 				printSiegeWeaponInfo();
+			}
+			
+		}
+		
+		void putInPile(equipment dropThis) {
+			for (int x = 0; x < 10; x++) {
+				if (equipmentPile[x].equipSlot == "null") {
+					equipmentPile[x] = dropThis;
+					break;
+				}
+			}
+		}
+		
+		bool somethingInPile() {
+			for (int x = 0; x < 10; x++) {
+				if (equipmentPile[x].equipSlot != "null") {
+					return true;
+					break;
+				}
+			}
+			return false;
+		}
+		
+		equipment removeFromPile(int whichItem) {
+			equipment temp = equipmentPile[whichItem];
+			equipmentPile[whichItem].makeNull();
+			return temp;
+		}
+		
+		void viewEquipmentPile() {
+			for (int x = 0; x < 10; x++) {
+				if (equipmentPile[x].equipSlot != "null") {
+					cout << x << ": " << equipmentPile[x].getName() << endl;
+				}
 			}
 		}
 		
@@ -102,6 +167,15 @@ class mapSquare {
 			passable = passableSet;
 		}
 		
+		bool getSeeThrough () {
+			
+			return seeThrough; 
+		}
+		
+		void setSeeThrough (bool seeThroughSet) {
+			seeThrough = seeThroughSet;
+		}
+		
 		int getGold () {
 			return gold;
 		}
@@ -144,9 +218,23 @@ class mapSquare {
 			arcane = arcaneSet;
 		}
 		
-		void setSiegeWeapon(int weaponTypeSet) {
+		int getDivineUnderlay () {
+			return divineUnderlay;
+		}
+		void setDivineUnderlay(int divineUnderlaySet) {
+			divineUnderlay = divineUnderlaySet;
+		}
+		
+		int getArcaneUnderlay () {
+			return arcaneUnderlay;
+		}
+		void setArcaneUnderlay(int arcaneUnderlaySet) {
+			arcaneUnderlay = arcaneUnderlaySet;
+		}
+		
+		void setSiegeWeapon(int weaponTypeSet, int weaponLevel) {
 			if (weaponTypeSet == 1) {
-				weaponHere = new ballista();
+				weaponHere = new ballista(weaponLevel);
 				setHasSiegeWeapon(true);
 			}
 			if(weaponTypeSet == 0) {
@@ -208,4 +296,12 @@ class mapSquare {
 			return (weaponHere)->getWeaponName();
 		}
 		
+		int getCastleSize () {
+			return castleSize;
+		}
+		void setCastleSize (int castleSizeSet) {
+			castleSize = castleSizeSet;
+		}
+		
  };
+
