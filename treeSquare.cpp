@@ -1,8 +1,10 @@
 class treeSquare: public plantSquare {
 	public:
 		treeSquare() {
+			squareType = "tree";
 			passable = false;
-			symbol = "*";
+			seeThrough = false;
+			symbol = "^";
 			material = 1;
 		}
 	
