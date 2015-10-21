@@ -252,28 +252,45 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][1
     // follow the route on the Map and display it 
     
     int moveCost = 0;
-    int j = 0;
+    int j = 0, x = 0, y = 0;
     char c;
+     
+        for(int i=0;i<route.length();i++)
+        {
+            
+            
+            x=x+dx[j];
+            y=y+dy[j];
+            Map[x][y]=3;
+        }
+        
+    int currentElevation = elevationMap[xA][yA]
     
-    
-    for (int i = 0; i < route.length(); i++) {
+    for (int i = 0; i <= route.length(); i++) {
 			c =route.at(i);
 			istringstream(&c) >> j;
 			
 			if (j == 2 || j == 4 || j == 6  || j == 8 || j == 0) {
-				moveCost += 2;
+				moveCost += 20;
 				
 			}
 			else if (j == 1 || j == 3 || j == 5 || j == 7) {
-				moveCost += 3;
+				moveCost += 30;
 			}
+			x=x+dx[j];
+            y=y+dy[j];
+            int changeTimes5 = (elevationMap[x][y] - currentElevation) * 5
+            if (changeTimes5 > 0) {
+				changeTimes5 = changeTimes5 / 2;
+			}
+            moveCost += changeTimes5;
 	}
-	int elevationChange = (elevationMap[xB][yB] - elevationMap[xA][yA]) / 2;
-	if (elevationChange < 0) {
-		elevationChange = elevationChange / 4;
-	}
-	moveCost += elevationChange;
-	moveCost = moveCost / 2; //this fixes the weighting diagonals as 1.5
+	//int elevationChange = (elevationMap[xB][yB] - elevationMap[xA][yA]) / 2;
+	//if (elevationChange < 0) {
+	//	elevationChange = elevationChange / 4;
+	//}
+	//moveCost += elevationChange;
+	moveCost = moveCost / 20; //this fixes the weighting diagonals as 1.5, and gets rid of the tens multiplier
 	//cout << "route is " << route << endl;
 	
     
