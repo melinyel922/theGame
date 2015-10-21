@@ -56,9 +56,8 @@
 	//range gets a little messed up for melee if on a hill, they can attack too far.
 	//dramaticPause does it all at once, and then spews all the text rather than waiting
 	//unleash infinite loops if it finishes off the last enemy
-	//change druid range while an animal
 	//need to fix animal companion
-	//make smite damage deal seperately from weapon damage to account for weakness to light
+	//scout/halfing/lucky reroll got a little messed up with the introuction of differential dice rolling
 	
 	
 
@@ -96,7 +95,32 @@
 	//when you get one of the above medals, your army gets some bonus money as well
 	
 	
-		
+	//change up dice roll types
+		//class picks consistancy for attack & defense
+		//classBase ~= 3 or 4
+		//consistancy[level/3 + classBase]
+		//examples
+			//5					1		1		1			0			1			0			0				0				1			0
+			//6					0		1		0			1			1			1			0				1				0			1
+			//5					0		1		0			1			1			1			0				1				0			0
+			//6					0		1		0			1			0			0			1				1				1			1
+			//consistant		2d2->3	d6->3.5	2d4->5		2d4->5		2d6->7		3d4+1->8.5	4d4->10			5d4->12.5		6d4->15		7d4->17.5
+			//semi-consistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		3d6->10.5		3d6+1d4->13		4d6->14		4d8->18
+			//semi-inconsistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		2d10-1->10		2d12->13		2d12+1->14	2d10+1d12->17.5
+			//inconsistant		d4->2.5	d6->3.5	1d8->4.5	1d10->5.5	1d12->6.5	1d12+2->8.5	1d20+1->11.5	1d20+1d4->13	1d30->15.5	1d30+1d4->18
+			
+			//class		attack	defense
+			//fighter	c		c
+			//archer	sc		i
+			//priest	sc		si
+			//berserker	i		i
+			//knight	c		sc
+			//scout		si		sc
+			//mage		i		si
+			//warlock	si		si
+			//steampunk	si		c
+			
+	 
 	
 
 
@@ -144,7 +168,7 @@
 				//boy->hombre
 				*/
 				
-	//ability to hit certain body parts
+	/*//ability to hit certain body parts
 		//make classes
 		//injuries can lower stats
 		//people can be left/right handed
@@ -161,7 +185,7 @@
 		//different effects if major damage is done
 		//if an arm is removed, so is their hand and fingers
 	//character permanant scarring from major damage
-				
+	*/		
 				
 				
 	//add a respawning game option, first to 20 kills wins
@@ -182,6 +206,7 @@
 		//the stronger ones heal the same health to mana ratio, but use the same amount of ap
 	//make it so that if you put the wrong input in it will give an eror message and ask you to repeat it
 		//or on the rangeDisplayMap have it display numbers for each range category
+	//shows skills on in depth team display
 	//map conditions
 	/*
 		//some passable conditions
@@ -234,8 +259,7 @@
 			//all one material
 				//extra if including weapon
 				*/
-		/*		
-		//total possible names
+		/*	//total possible names
 			//level		22
 			//cloth 	22
 			//leather	20
@@ -550,7 +574,7 @@
 				//morningstar	55/10/35
 				//flail			80/5/15
 				//handaxe		40/50/10
-		//medium-heavy	(48 inches, 2.5 lb)
+		//medium-heavy	(48 inches, 3 lb)
 			//wood 3
 				//heavy club		100/0/0
 				//kite shield		
@@ -578,7 +602,7 @@
 				//fauchard			10/10/80
 				//pike				15/5/80
 				
-		//heavy			(60 inch, 4lbs)
+		//heavy			(60 inch, 5lbs)
 			//wood 2
 				//great club	100/0/0
 				//tower shield	
@@ -1233,7 +1257,408 @@ int rd8()  { int d8 = rand() % 8 + 1; }
 int rd10() { int d10 = rand() % 10 + 1; }
 int rd12() { int d12 = rand() % 12 + 1; }
 int rd20() { int d20 = rand() % 20 + 1; }
+int rd30() { int d30 = rand() % 30 + 1; }
 int rd100() { int d100 = rand() % 100 + 1; }
+
+
+int consistantRoll(int indexer, bool display) {
+	//consistant		2d2->3	d6->3.5	2d4->5		2d4->5		2d6->7		3d4+1->8.5	4d4->10			5d4->12.5		6d4->15		7d4->17.5
+	int output = 0;
+	
+	switch(indexer) {
+		case 1:
+			output = rd2() + rd2();
+			if (display) {
+				cout << "2d2";
+			}
+		break;
+		case 2:
+			output = rd6();
+			if (display) {
+				cout << "1d6";
+			}
+		break;
+		case 3:
+			output = rd4() + rd4();
+			if (display) {
+				cout << "2d4";
+			}
+		break;
+		case 4:
+			output = rd4() + rd4();
+			if (display) {
+				cout << "2d4";
+			}
+		break;
+		case 5:
+			output = rd6() + rd6();
+			if (display) {
+				cout << "2d6";
+			}
+		break;
+		case 6:
+			output = rd4() + rd4() + rd4() + 1;
+			if (display) {
+				cout << "3d4+1";
+			}
+		break;
+		case 7:
+			output = rd4() + rd4() + rd4() + rd4();
+			if (display) {
+				cout << "4d4";
+			}
+		break;
+		case 8:
+			output = rd4() + rd4() + rd4() + rd4() + rd4();
+			if (display) {
+				cout << "5d4";
+			}
+		break;
+		case 9:
+			output = rd4() + rd4() + rd4() + rd4() + rd4() + rd4();
+			if (display) {
+				cout << "6d4";
+			}
+		break;
+		case 10:
+			output = rd4() + rd4() + rd4() + rd4() + rd4() + rd4() + rd4();
+			if (display) {
+				cout << "7d4";
+			}
+		break;
+	}
+	return output;
+}
+int semiConsistantRoll(int indexer, bool display) {
+	//semi-consistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		3d6->10.5		3d6+1d4->13		4d6->14		4d8->18
+	int output = 0;
+	
+	switch(indexer) {
+		case 1:
+			output = rd4();
+			if (display) {
+				cout << "1d4";
+			}
+		break;
+		case 2:
+			output = rd6();
+			if (display) {
+				cout << "1d6";
+			}
+		break;
+		case 3:
+			output = rd8();
+			if (display) {
+				cout << "1d8";
+			}
+		break;
+		case 4:
+			output = rd8() + 1;
+			if (display) {
+				cout << "1d8+1";
+			}
+		break;
+		case 5:
+			output = rd6() + rd6();
+			if (display) {
+				cout << "2d6";
+			}
+		break;
+		case 6:
+			output = rd8() + rd8();
+			if (display) {
+				cout << "2d8";
+			}
+		break;
+		case 7:
+			output = rd6() + rd6() + rd6();
+			if (display) {
+				cout << "3d6";
+			}
+		break;
+		case 8:
+			output = rd6() + rd6() + rd6() + rd4();
+			if (display) {
+				cout << "3d6+1d4";
+			}
+		break;
+		case 9:
+			output = rd6() + rd6() + rd6() + rd6();
+			if (display) {
+				cout << "4d6";
+			}
+		break;
+		case 10:
+			output = rd8() + rd8() + rd8() + rd8();
+			if (display) {
+				cout << "4d8";
+			}
+		break;
+	}
+	return output;
+}	
+	
+
+int semiInconsistantRoll(int indexer, bool display) {
+	//semi-inconsistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		2d10-1->10		2d12->13		2d12+1->14	2d10+1d12->17.5
+	int output = 0;
+	
+	switch(indexer) {
+		case 1:
+			output = rd4();
+			if (display) {
+				cout << "1d4";
+			}
+		break;
+		case 2:
+			output = rd6();
+			if (display) {
+				cout << "1d6";
+			}
+		break;
+		case 3:
+			output = rd8();
+			if (display) {
+				cout << "1d8";
+			}
+		break;
+		case 4:
+			output = rd8() + 1;
+			if (display) {
+				cout << "1d8+1";
+			}
+		break;
+		case 5:
+			output = rd6() + rd6();
+			if (display) {
+				cout << "2d6";
+			}
+		break;
+		case 6:
+			output = rd8() + rd8();
+			if (display) {
+				cout << "2d8";
+			}
+		break;
+		case 7:
+			output = rd10() + rd10() - 1;
+			if (display) {
+				cout << "2d10-1";
+			}
+		break;
+		case 8:
+			output = rd12() + rd12();
+			if (display) {
+				cout << "2d12";
+			}
+		break;
+		case 9:
+			output = rd12() + rd12() + 1;
+			if (display) {
+				cout << "2d12+1";
+			}
+		break;
+		case 10:
+			output = rd10() + rd10() + rd12();
+			if (display) {
+				cout << "2d10+12";
+			}
+		break;
+	}
+	return output;
+}
+int inconsistantRoll(int indexer, bool display) {
+	//inconsistant		d4->2.5	d6->3.5	1d8->4.5	1d10->5.5	1d12->6.5	1d12+2->8.5	1d20+1->11.5	1d20+1d4->13	1d30->15.5	1d30+1d4->18
+	int output = 0;
+	
+	switch(indexer) {
+		case 1:
+			output = rd4();
+			if (display) {
+				cout << "1d4";
+			}
+		break;
+		case 2:
+			output = rd6();
+			if (display) {
+				cout << "1d6";
+			}
+		break;
+		case 3:
+			output = rd8();
+			if (display) {
+				cout << "1d8";
+			}
+		break;
+		case 4:
+			output = rd10();
+			if (display) {
+				cout << "1d10";
+			}
+		break;
+		case 5:
+			output = rd12();
+			if (display) {
+				cout << "1d12";
+			}
+		break;
+		case 6:
+			output = rd12() + 2;
+			if (display) {
+				cout << "1d12+2";
+			}
+		break;
+		case 7:
+			output = rd20() + 1;
+			if (display) {
+				cout << "1d20+1";
+			}
+		break;
+		case 8:
+			output = rd20() + rd4();
+			if (display) {
+				cout << "1d20+1d4";
+			}
+		break;
+		case 9:
+			output = rd30();
+			if (display) {
+				cout << "1d30";
+			}
+		break;
+		case 10:
+			output = rd30() + rd4();
+			if (display) {
+				cout << "1d30+1d4";
+			}
+		break;
+		
+	}
+	return output;
+}
+
+
+int characterRoll(int guy, bool isTheAttacker, bool display) {
+	int indexer = 0;
+	int consistancy = 0;
+	int output = 0;
+	//consistant		2d2->3	d6->3.5	2d4->5		2d4->5		2d6->7		3d4+1->8.5	4d4->10			5d4->12.5		6d4->15		7d4->17.5
+	//semi-consistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		3d6->10.5		3d6+1d4->13		4d6->14		4d8->18
+	//semi-inconsistant	d4->2.5	d6->3.5	1d8->4.5	1d8+1->5.5	2d6->7		2d8->9		2d10-1->10		2d12->13		2d12+1->14	2d10+1d12->17.5
+	//inconsistant		d4->2.5	d6->3.5	1d8->4.5	1d10->5.5	1d12->6.5	1d12+2->8.5	1d20+1->11.5	1d20+1d4->13	1d30->15.5	1d30+1d4->18
+
+	//class		attack	defense
+	//fighter	c		c
+	//archer	sc		i
+	//priest	sc		si
+	//berserker	i		i
+	//knight	c		sc
+	//scout		si		sc
+	//mage		i		si
+	//warlock	si		si
+	//steampunk	si		c
+	switch(dude[guy].getCharacterClass() ) {
+		case 1:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 4;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 4;
+			}
+			break;
+		case 2:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 3;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 1;
+			}
+			break;
+		case 3:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 3;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 2;
+			}
+			break;
+		case 4:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 1;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 1;
+			}
+			break;
+		case 5:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 4;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 3;
+			}
+			break;
+		case 6:
+			if(isTheAttacker) {
+				indexer = dude[guy].getLevel() / 3 + 2;
+				consistancy = 2;
+			}
+			else {
+				indexer = dude[guy].getLevel() / 3 + 1;
+				consistancy = 3;
+			}
+			break;
+		case 7:
+			if(isTheAttacker) {
+				indexer = (dude[guy].getLevel() + 1) / 4 + 2;
+				consistancy = 2;
+			}
+			else {
+				indexer = (dude[guy].getLevel() + 1) / 4 + 1;
+				consistancy = 2;
+			}
+			break;
+		case 8:
+			if(isTheAttacker) {
+				indexer = (dude[guy].getLevel() + 1) / 4 + 2;
+				consistancy = 2;
+			}
+			else {
+				indexer = (dude[guy].getLevel() + 1) / 4 + 1;
+				consistancy = 4;
+			}
+			break;	
+	}
+	
+	
+	
+	switch(consistancy) {
+		case 1:
+			output = inconsistantRoll(indexer,display);
+			break;
+		case 2:
+			output = semiInconsistantRoll(indexer,display);
+			break;
+		case 3:
+			output = semiConsistantRoll(indexer,display);
+			break;
+		case 4:
+			output = consistantRoll(indexer,display);
+			break;
+	}
+	return output;
+}
+
 
 int moreRandomTeam[5] = {0,0,0,0,0};
 int upOrDown() {int upOrDown = rand() % 3 -1;}
@@ -1375,6 +1800,10 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 		int damageStat = 0;
 		int damagePercent = 0;
 		
+		if(smiteDamage > 0) {//lowers the raw damage, and later increases the percent for light to make up for it
+			rawDamageTotal = rawDamageTotal * 2 / 3;
+		}
+		
 		cout << "Incoming damage total = " << rawDamageTotal << endl;
 		rawDamageTotal += rawDamageTotal * dude[dealer].addUpEquipmentStats("baseAttack") / ( dude[dealer].addUpEquipmentStats("baseAttack") + (50 * (dealerLevel + 1)));
 		cout << "After base attack add = " << rawDamageTotal << endl;
@@ -1388,6 +1817,7 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "fire " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damageCold")) {
 			resistStat = dude[reciever].getResistCold();
@@ -1397,6 +1827,7 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "cold " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damageLightning")) {
 			resistStat = dude[reciever].getResistLightning();
@@ -1406,15 +1837,23 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "lightning " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
-		if (dude[dealer].addUpEquipmentStats("damageLight")) {
+		if (dude[dealer].addUpEquipmentStats("damageLight") || smiteDamage > 0) {
 			resistStat = dude[reciever].getResistLight();
 			resistPercent = 100 * resistStat / ( resistStat + ( 50 * (dealerLevel + 1)) );
 			
 			damageStat = dude[dealer].addUpEquipmentStats("damageLight");
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
+			if(smiteDamage > 0) {//lowered the raw damage, and now increases the percent for light to make up for it plus a little extra
+				damagePercent += 50;
+				cout << "adding smite damage\n";
+			}
+			
+			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "light " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damageDark")) {
 			resistStat = dude[reciever].getResistDark();
@@ -1424,6 +1863,7 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "dark " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damagePoison")) {
 			resistStat = dude[reciever].getResistPoison();
@@ -1433,6 +1873,7 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "poison " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damageManaEnergy")) {
 			resistStat = dude[reciever].getResistManaEnergy();
@@ -1442,6 +1883,7 @@ int weaponDamage(int rawDamageTotal, int dealer, int reciever) {
 			damagePercent = rawDamageTotal * damageStat / ( damageStat + ( 50 * (dealerLevel + 1)) );
 			
 			overallDamage = overallDamage + rawDamageTotal * damagePercent / 100 - rawDamageTotal * damagePercent * resistPercent / 10000;
+			cout << "mana energy " << damagePercent << "%" << " totalDamage = " << overallDamage << endl;
 		}
 		if (dude[dealer].addUpEquipmentStats("damageBludgeoning")) {
 			
@@ -2568,7 +3010,7 @@ void learnClasses() {
 			cout << "\nPaladin:\n\nAttack:" << priest[0][1] + 4 << "\nDefense:" << priest[0][2] + 4 << "\nHealth:" << priest[0][3] + 5 << "\nMove:" << priest[0][4] - 1 << "\nRange:" << priest[0][5] << "\nMax Mana:" << priest[0][13] - 20 << "\nMana Regen:" << priest[0][14] - 3 << endl;
 			cout << "\nDescription: \n	Paladins are holy warriors. Upon reaching their prestige they lose a lot of their max mana ";
 			cout << "and a lot of their mana regen, but they gain a ton of attack and defense. plus they gain a powerful smite attack ";
-			cout << "which is like a regular attack, but with two d12's rather than just one. This makes the attack fairly ";
+			cout << "which is like a regular attack, but with an additional d10. This makes the attack fairly ";
 			cout << "random, but with the potential to be devastating.\n";
 			break;
 			
@@ -3056,7 +3498,7 @@ void spellDescriptions() {
 	cout << "Revive\t\t\tAll\t1\t\tRevives if current mana is greater than 4d20\n";
 	cout << "Bless\t\t\t5\t3\t\tlasts 2 turns, 50% chance to raise attack by 20%\n";
 	cout << "Curse\t\t\t5\t5\t\tlasts 3 turns, 50 chance to lower attack by 20%\n";
-	cout << "Smite\t\t\t5\t1\t\tA normal attack plus another d12\n";
+	cout << "Smite\t\t\t5\t1\t\tA normal attack plus another d10\n";
 	cout << "Healing balm\t\t5\t3\t\topposite of poison, moves counter D4\n";
 	cout << endl;
 	cout << "Druid forms:\tAttack\tDefense\tMove\tOther\n";
@@ -4988,7 +5430,7 @@ void prestige() {
 	
 	
 	for (x=1; x<= peopleInPlay; x++) {
-		if (dude[x].getLevel() == 7 && dude[x].getPrestige() == 0){
+		if (dude[x].getLevel() == 8 && dude[x].getPrestige() == 0){
 			cout << "\nCongratulations, you have now aquired enough experience to prestige\n";
 			
 			if (dude[x].getCharacterClass() == 1) {	//fighter	brawler				defender
@@ -5947,7 +6389,22 @@ void levelUp() {
 	
 	for (x=1; x <= peopleInPlay; x++) {
 		while (dude[x].getXp() >= (500 + (dude[x].getLevel() * 300))) { //checks if they have enough xp, need more at higher levels
-				
+				//1->manaregen	mana pool	health				
+				//2->stat		mana pool	health				
+				//3->manaregen	mana pool	health		dice1	casterdice1	
+				//4->stat		mana pool	health				renown
+				//5->manaregen	mana pool	health				
+				//6->stat		mana pool	health		dice2		
+				//7->manaregen	mana pool	health				casterdice2
+				//8->stat		mana pool	health				prestige?
+				//9->manaregen	mana pool	health		dice3		
+				//10->stat		mana pool	health				
+				//11->manaregen	mana pool	health				casterdice3
+				//12->stat		mana pool	health		dice4	prestige specialization
+				//13->manaregen	mana pool	health			
+				//14->stat		mana pool	health				
+				//15->manaregen	mana pool	health		dice5	casterdice4
+				//16->stat		mana pool	health				paragon?
 				dude[x].setLevel(dude[x].getLevel() + 1); //adds a level
 				
 				cout << endl << epithet(x)  << " has leveled up to level " << dude[x].getLevel() << endl << endl;
@@ -5979,7 +6436,7 @@ void levelUp() {
 					}
 					if (statchoice == 10) {dude[x].setRange(dude[x].getRangeStat() + 3);}//raises range
 				}					
-				if (dude[x].getMaxManaStat() > 0) {//checks if they are a spellcaster to raise mana pool
+				if (dude[x].getMaxManaStat() > 0) {//checks if they are a spellcaster to raise mana pool always, and regen on odd levels
 					int manaRaise = 25;
 					switch (dude[x].getCharacterClass()) {
 						case 1://fighter
@@ -6052,7 +6509,7 @@ void levelUp() {
 					}
 					dude[x].setMaxMana(dude[x].getMaxMana() + manaRaise); //raises mana pool a little
 					
-					if (dude[x].getLevel() %  2 == 1) {
+					if (dude[x].getLevel() %  2 == 1) {//on odd levels, raises their regen
 						if (dude[x].getCharacterClass() == 8) {
 							dude[x].setManaRegen(dude[x].getManaRegenStat() + 1); //on odd levels, raises their regen
 						}
@@ -6283,6 +6740,123 @@ void infodump() {
 				hall_of_heroes << "XP:       " << dude[x].getXp() << endl;
 				hall_of_heroes << "Level:    " << dude[x].getLevel() << endl;
 				hall_of_heroes << "Location: (" << dude[x].getXpos() << "," << dude[x].getYpos() << ")" << endl << endl;
+				
+				
+				hall_of_heroes << "Number:      " << x  << endl;
+				hall_of_heroes << "Name:        " << dude[x].getName() << endl << "Race:        " << dude[x].getRaceName() << endl << "Class:       " << dude[x].getRenownName() << dude[x].getCharacterClassName() << endl;
+				if (dude[x].getPrestige() > 0) {
+				hall_of_heroes << "Prestige:    " << dude[x].getPrestigeName() << endl;	
+				}
+				if (dude[x].getBirthRight() > 0) {
+					hall_of_heroes << "Birthright:  " << dude[x].getBirthRightName() << endl;
+				}
+				hall_of_heroes << "Attack:      " << dude[x].getAttack() << endl;
+				hall_of_heroes << "Defense:     " << dude[x].getDefense() << endl;
+				hall_of_heroes << "Health:      ";
+				if (dude[x].getHealth() <= 0) { hall_of_heroes << "dead\n"; } else hall_of_heroes << dude[x].getHealth() << "/" << dude[x].getMaxHealth() << endl; //current out of total health
+				int healthBar = dude[x].getHealth() * 10 / dude[x].getMaxHealth(); 
+				hall_of_heroes << "[";
+				for (int j=0; j < 10; j++) {
+					if (j<=healthBar && healthBar > 0) {
+						
+						hall_of_heroes << "*";
+					}
+					else {
+						hall_of_heroes << "-";
+					}
+				}
+				hall_of_heroes << "]\n";
+				if (dude[x].getMaxMana() > 0) {
+					if (dude[x].getCharacterClass() != 9) {
+						hall_of_heroes << "Mana:        " << dude[x].getMana() << "/" << dude[x].getMaxMana()<< endl;
+					}
+					else {
+						hall_of_heroes << "Psi:        " << dude[x].getMana() << "/" << dude[x].getMaxMana()<< endl;
+					}
+					int manaBar = dude[x].getMana() * 10 / dude[x].getMaxMana(); 
+					hall_of_heroes << "[";
+					for (int j=0; j < 10; j++) {
+						if (j<=manaBar) {
+							hall_of_heroes << "*";
+						}
+						else {
+							hall_of_heroes << "-";
+						}
+					}
+					hall_of_heroes << "]" << endl;
+					if (dude[x].getCharacterClass() != 9) {
+						hall_of_heroes << "Mana Regen   " << dude[x].getManaRegen() << endl;
+						hall_of_heroes << "Current Regen" << manaRegenAmount(x) << endl;
+					}
+					else {
+						hall_of_heroes << "Psi Regen   " << dude[x].getManaRegen() << endl;
+						hall_of_heroes << "Current Regen" << manaRegenAmount(x) << endl;
+					}
+				}
+				hall_of_heroes << "Weapon Bonus:" << 100 * dude[x].addUpEquipmentStats("baseAttack") / ( dude[x].addUpEquipmentStats("baseAttack") + (50 * (dude[x].getLevel() + 1))) << endl;
+				hall_of_heroes << "Move:        " << dude[x].getMove() << endl;
+				hall_of_heroes << "Range:       " << dude[x].getRange() << endl;
+				hall_of_heroes << "Accuracy:    " << 100 - dude[x].getMissChance() << endl;
+				hall_of_heroes << "Evasion:     " << dude[x].getEvasion() << endl;
+				hall_of_heroes << "XP:          " << dude[x].getXp() << "/" << (500 + (dude[x].getLevel() * 300)) << endl;
+				hall_of_heroes << "Level:       " << dude[x].getLevel() << endl;
+				hall_of_heroes << "Location:    (" << dude[x].getXpos() << "," << dude[x].getYpos() << ")" << endl;
+
+
+				hall_of_heroes << "Resist Fire       " << dude[x].getResistFire() << "\t" << 100 * dude[x].getResistFire() / (dude[x].getResistFire() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Cold       " << dude[x].getResistCold() << "\t" << 100 * dude[x].getResistCold() / (dude[x].getResistCold() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Lightning  " << dude[x].getResistLightning() << "\t" << 100 * dude[x].getResistLightning() / (dude[x].getResistLightning() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Light      " << dude[x].getResistLight() << "\t" << 100 * dude[x].getResistLight() / (dude[x].getResistLight() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Dark       " << dude[x].getResistDark() << "\t" << 100 * dude[x].getResistDark() / (dude[x].getResistDark() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Poison     " << dude[x].getResistPoison() << "\t" << 100 * dude[x].getResistPoison() / (dude[x].getResistPoison() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist ManaEnergy " << dude[x].getResistManaEnergy() << "\t" << 100 * dude[x].getResistManaEnergy() / (dude[x].getResistManaEnergy() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Bludgeoning" << dude[x].getResistBludgeoning() << "\t" << 100 * dude[x].getResistBludgeoning() / (dude[x].getResistBludgeoning() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Slashing   " << dude[x].getResistSlashing() << "\t" << 100 * dude[x].getResistSlashing() / (dude[x].getResistSlashing() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Resist Piercing   " << dude[x].getResistPiercing() << "\t" << 100 * dude[x].getResistPiercing() / (dude[x].getResistPiercing() + (50 * (dude[x].getLevel() + 1) )) << "%" << endl;
+				hall_of_heroes << "Status:      ";
+				if (defended[x] > 0) {hall_of_heroes << "Defended: " << defended[x] << "\t";}
+				if (charge[x] > 0) {hall_of_heroes << "Charging\t";}
+				if (bullrush[x] > 0) {hall_of_heroes << "Bullrushing\t";}
+				if (poison[x] > 0) {hall_of_heroes << "Poisoned: " << poison[x] << "\t";}
+				if (poison[x] < 0) {hall_of_heroes << "Healing Balm: " << -poison[x] << "\t";}
+				if (burn[x] > 0) {hall_of_heroes << "Burning: " << burn[x] << "\t";}
+				if (burn[x] < 0) {hall_of_heroes << "Freezing: " << - burn[x] << "\t";}
+				if (haste[x] > 0) {hall_of_heroes << "Hastened: " << haste[x] << "\t";}
+				if (haste[x] < 0) {hall_of_heroes << "Slowed: " << -haste[x] << "\t";}
+				if (bless[x] > 0) {hall_of_heroes << "Blessed: " << bless[x] << "\t";}
+				if (bless[x] < 0) {hall_of_heroes << "Cursed: " << -bless[x] << "\t";}
+				if (enchantWeapon[x] > 0) {hall_of_heroes << "Weapon Enchantments Stored: " << enchantWeapon[x] << "\t";}
+				if (shieldTimer[x] > 0) {hall_of_heroes << "Shielded: " << shield[x] << " for " << shieldTimer[x] << " turns\t";}
+				if (hold[x] > 0) {hall_of_heroes << "Held in place\t";}
+				if (protectRangedTimer[x] > 0) {hall_of_heroes << "Protected from arrows for " << protectRangedTimer[x] << " turns\t";}
+				if (druidForm[x] == 1) {hall_of_heroes << "Bear form\t";}
+				if (druidForm[x] == 2) {hall_of_heroes << "Wolf form\t";}
+				if (druidForm[x] == 3) {hall_of_heroes << "Hawk form\t";}
+				if (druidForm[x] == 4) {hall_of_heroes << "Snake form\t";}
+				if (needToReload[x] > 0) {hall_of_heroes << "Needs to reload\t";}
+				if (lichForm[x] == 1) {hall_of_heroes << "Lich\t";}
+				if (backstabCoolDown[x] > 0) {hall_of_heroes << "Backstab cooldown: " << backstabCoolDown[x] << "\t";}
+				if (doubleShotCoolDown[x] > 0) {hall_of_heroes << "Double-shot cooldown: " << doubleShotCoolDown[x] << "\t";}
+				if (boundCoolDown[x] > 0) {hall_of_heroes << "Bound cooldown: " << boundCoolDown[x] << "\t";}
+				if (dazeCoolDown[x] > 0) {hall_of_heroes << "Daze cooldown: " << dazeCoolDown[x] << "\t";} 
+				if (crippleCoolDown[x] > 0) {hall_of_heroes << "Cripple cooldown: " << crippleCoolDown[x] << "\t";}
+				if (pushBackCoolDown[x] > 0) {hall_of_heroes << "Pushback cooldown: " << pushBackCoolDown[x] << "\t";}
+				if (throwCoolDown[x] > 0) {hall_of_heroes << "Throw cooldown: " << throwCoolDown[x] << "\t";}
+				if (axeThrowCoolDown[x] > 0) {hall_of_heroes << "Axe throw cooldown: " << axeThrowCoolDown[x] << "\t";}
+				if (aimedShotCoolDown[x] > 0) {hall_of_heroes << "Aimed shot cooldown: " << aimedShotCoolDown[x] << "\t";}
+				if (piercingShotCoolDown[x] > 0) {hall_of_heroes << "Piercing shot cooldown: " << piercingShotCoolDown[x] << "\t";}
+				if (breathCoolDown[x] > 0) {hall_of_heroes << "Breath cooldown: " << breathCoolDown[x] << "\t";}
+				if (healingBalmCoolDown[x] > 0) {hall_of_heroes << "Healing Balm cooldown: " << healingBalmCoolDown[x] << "\t";}
+				
+				//at some point should adjust viewEquipped so it works here
+				
+				//hall_of_heroes << "\n\nEquipped: \n";
+				//dude[x].viewEquipped();
+				//hall_of_heroes << endl;
+				
+				//hall_of_heroes << "Inventory: \n";
+				//dude[x].viewInventory();
+
 			}
 		}
 	}
@@ -9567,7 +10141,7 @@ void usingSiegeWeaponBallista(int x, int y) {
 				else {
 					cout << "The bolt harmlessly misses " << dude[target].getName() << endl;
 				}
-				mainMap.setGridSiegeReloadCoolDown(x,y,  mainMap.getGridSiegeReloadTime(x,y) );//resets cooldown
+				mainMap.setGridSiegeReloadCoolDown(x,y, mainMap.getGridSiegeReloadCoolDown(x,y) + mainMap.getGridSiegeReloadTime(x,y) );//resets cooldown
 			}
 			else {
 				cout << "\nThey are not in range\n";
@@ -9588,7 +10162,12 @@ void usingSiegeWeapon(int x, int y) {
 		if (isLoading == 1) {
 			cout << "engineering level " << dude[moveGuy].getEngineering() << endl;
 			
-			loadAmount = 10 + dude[moveGuy].getEngineering() * 5;
+			if (dude[moveGuy].getEngineering()) {//this is added because a zero on engineering will make rand() % engineering to cause problems
+				loadAmount = 15 + dude[moveGuy].getEngineering() * 3 + rand() % (dude[moveGuy].getEngineering() * 5);
+			}
+			else {
+				loadAmount = 15;
+			}
 			
 			mainMap.setGridSiegeReloadCoolDown(x,y,  mainMap.getGridSiegeReloadCoolDown(x,y) - loadAmount);//takes some off the cooldown time left
 			
@@ -11238,6 +11817,8 @@ int buyPerson[20] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
 				mapArea = mapLimitX * mapLimitY;
 				//laptop 25 70
 				//coffman tv 40,100
+				//lind 80,130
+					//80,100 to still fit with manadisplay sometimes showing triple digits
 			}
 
 			mainMap.setMapSize(mapLimitX, mapLimitY);
@@ -11678,8 +12259,18 @@ if (needToReload[moveGuy] > 0) {
 			
 				if (missed == 0) { //checks if the person didn't miss
 				
-					int attackRoll = rd12(), defenseRoll = rd10();
 					
+					
+					
+					cout << endl << dude[moveGuy].getName() << " rolls ";
+					int attackRoll = characterRoll(moveGuy,true,true);
+					cout << " for " << attackRoll;
+					dramaticPause();
+					cout << " and " << dude[defender].getName() << " rolls ";
+					int defenseRoll = characterRoll(defender,false,true);
+					dramaticPause();
+					cout << " and gets " << defenseRoll << endl; 
+					dramaticPause();
 					
 					//if a scout, halfling, or lucky rolls poorly, they get to use luck to re-roll
 						
@@ -11692,8 +12283,9 @@ if (needToReload[moveGuy] > 0) {
 					dude[defender].setXp(dude[defender].getXp() + 10); //adds xp
 					if (army[dude[defender].getTeam() ][0]) { armyGainMoney(dude[defender].getTeam(), (10) * 2);}
 					
-					cout << endl << dude[defender].getName() << " was able help himself after a fumble\n";
-					defenseRoll = rd10();
+					
+					defenseRoll = characterRoll(moveGuy,false,false);
+					cout << endl << dude[defender].getName() << " was able help himself after a fumble with a " << defenseRoll << endl;
 					dramaticPause();
 					}
 					
@@ -11703,11 +12295,12 @@ if (needToReload[moveGuy] > 0) {
 					if (dude[moveGuy].getRace() == 7){rerollAttack++;}
 					if ((rerollAttack == 1 && attackRoll == 1) || (rerollAttack == 2 && (attackRoll <= 2)) || (rerollAttack == 3 && (attackRoll <= 3))) {
 						
-					dude[moveGuy].setXp(dude[moveGuy].getXp() + 10);	//adds xp
-					if (army[dude[moveGuy].getTeam() ][0]) { armyGainMoney(dude[moveGuy].getTeam(), (10) * 2);}
-					cout << endl << dude[moveGuy].getName() << " was able to help himself after a fumble\n";
-					attackRoll = rd12();
-					dramaticPause();
+						dude[moveGuy].setXp(dude[moveGuy].getXp() + 10);	//adds xp
+						if (army[dude[moveGuy].getTeam() ][0]) { armyGainMoney(dude[moveGuy].getTeam(), (10) * 2);}
+						
+						cout << endl << dude[moveGuy].getName() << " was able to help himself after a fumble and gets ";
+						attackRoll = characterRoll(moveGuy,true,false);
+						dramaticPause();
 					}
 					
 					if (heightDifferenceSquared <= -8) { //if the attacker is 4 spaces higher, adds 10% attack (it was divided by 2 earlier)
@@ -11781,14 +12374,6 @@ if (needToReload[moveGuy] > 0) {
 						}
 					}
 					
-					cout << endl << dude[moveGuy].getName() << " rolls a ";
-					dramaticPause();
-					cout <<  attackRoll;
-					dramaticPause();
-					cout << " and " << dude[defender].getName() << " rolls a ";
-					dramaticPause();
-					cout << defenseRoll; 
-					dramaticPause();
 					
 					if (backstabbing || piercing) {//if backstabbing or piercing cancels half of defense
 						damage = damage + dude[defender].getDefense() * 10 / 2;
@@ -12658,12 +13243,12 @@ void fighterSkills() {
 	return;
 }
 
-void paladinSmite() { //like a normal attack plus d12
+void paladinSmite() { //like a normal attack plus d10
 	if (dude[moveGuy].getMana() >= 50) {
 		dude[moveGuy].setMana(dude[moveGuy].getMana() - 50); //subtracts mana
 		
 		
-		smiteDamage = rd12();
+		smiteDamage = rd10();
 		
 		if (dude[moveGuy].getPrestigeSpecialization() == 3032) {//paladin of righteousness
 			smiteDamage = smiteDamage + rd4();
