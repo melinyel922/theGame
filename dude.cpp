@@ -43,6 +43,7 @@ class dude
 		int startingMana;
 		int missChance;
 		int evasion;
+		int quickness;
 		
 		int engineering;
 		int heavinessUsage;
@@ -71,7 +72,7 @@ class dude
 		
 		
 		
-		dude(): name(), team(0), characterClass(0), attack(0), defense(0), health(0), move(0), range(0), ap(0), mana(0), xpos(0), ypos(0), xp(0), maxHealth(0), maxMana(0), manaRegen(0), level(0), prestige(0), race(0), birthRight(0), renown(0), prestigeSpecialization(0), paragon(0), epitome(0), startingMana(0), missChance(0), evasion(0), isArcane(false), isDivine(false), engineering(0), heavinessUsage(0), resistFire(0), resistCold(0), resistLightning(0), resistLight(0), resistDark(0), resistPoison(0), resistManaEnergy(0), resistBludgeoning(0), resistSlashing(0), resistPiercing(0) { 
+		dude(): name(), team(0), characterClass(0), attack(0), defense(0), health(0), move(0), range(0), ap(0), mana(0), xpos(0), ypos(0), xp(0), maxHealth(0), maxMana(0), manaRegen(0), level(0), prestige(0), race(0), birthRight(0), renown(0), prestigeSpecialization(0), paragon(0), epitome(0), startingMana(0), missChance(0), evasion(0), quickness(0), isArcane(false), isDivine(false), engineering(0), heavinessUsage(0), resistFire(0), resistCold(0), resistLightning(0), resistLight(0), resistDark(0), resistPoison(0), resistManaEnergy(0), resistBludgeoning(0), resistSlashing(0), resistPiercing(0) { 
 			for (int x = 0; x < 100; x++) {
 				inventory[x].makeNull();
 			}
@@ -354,6 +355,17 @@ class dude
 				total += rightHand.getEvasion();
 				total += leftHand.getEvasion();
 			}
+			else if (statType == "quickness") {
+				total += head.getQuickness();
+				total += torso.getQuickness();
+				total += shoulders.getQuickness();
+				total += arms.getQuickness();
+				total += hands.getQuickness();
+				total += legs.getQuickness();
+				total += feet.getQuickness();
+				total += rightHand.getQuickness();
+				total += leftHand.getQuickness();
+			}
 			else if (statType == "attack") {
 				total += head.getToHit();
 				total += torso.getToHit();
@@ -477,7 +489,11 @@ class dude
 		int getEvasion() {return evasion + addUpEquipmentStats("evasion");}
 		int getEvasionStat() {return evasion;}
 		void setEvasion(int Evasion) {evasion = Evasion;}
-
+		
+		int getQuickness() {return quickness + addUpEquipmentStats("quickness");}
+		int getQuicknessStat() {return quickness;}
+		void setQuickness(int Quickness) {quickness = Quickness;}
+		
 		int getEngineering() {return engineering + addUpEquipmentStats("engineering");}
 		int getEngineeringStat() {return engineering;}
 		void setEngineering(int Engineering) {engineering = Engineering;}
