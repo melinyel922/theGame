@@ -230,12 +230,7 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][1
 			else {
 				Map[xCounter][yCounter]=1;
 			}
-		 }
-    }
-    for(int yCounter=0;yCounter<m;yCounter++)
-    {
-        for(int xCounter=0;xCounter<n;xCounter++) 
-        {
+			
 			elevationMap[xCounter][yCounter] = importElevationMap[xCounter][yCounter];//sets the elevation map
 		 }
     }
@@ -255,17 +250,9 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][1
     int j = 0, x = 0, y = 0;
     char c;
      
-        for(int i=0;i<route.length();i++)
-        {
-            
-            
-            x=x+dx[j];
-            y=y+dy[j];
-            Map[x][y]=3;
-        }
         
     int currentElevation = elevationMap[xA][yA]
-    
+    bool surpassedMoveSpeed = false;
     for (int i = 0; i <= route.length(); i++) {
 			c =route.at(i);
 			istringstream(&c) >> j;
@@ -279,11 +266,14 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][1
 			}
 			x=x+dx[j];
             y=y+dy[j];
-            int changeTimes5 = (elevationMap[x][y] - currentElevation) * 5
-            if (changeTimes5 > 0) {
-				changeTimes5 = changeTimes5 / 2;
+            int changeTimesX = (elevationMap[x][y] - currentElevation) * 8;//higher number means harder to go uphill
+            if (changeTimesX > 0) {
+				changeTimesX = changeTimesX / 3;//bigger division means downhill is less usefull
 			}
-            moveCost += changeTimes5;
+            moveCost += changeTimesX;
+            if (moveCost > moveSpeed) {
+				surpassedMoveSpeed = true;
+			}
 	}
 	//int elevationChange = (elevationMap[xB][yB] - elevationMap[xA][yA]) / 2;
 	//if (elevationChange < 0) {
@@ -294,7 +284,7 @@ bool checkMovePath(int xA, int yA, int xB, int yB, int importElevationMap[150][1
 	//cout << "route is " << route << endl;
 	
     
-    if(route.length() > 0 && moveCost <= moveSpeed  )
+    if(route.length() > 0 && moveCost <= moveSpeed  && !(surpassedMoveSpeed))
     {
 		
 		return true;
