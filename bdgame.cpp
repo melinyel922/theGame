@@ -1036,7 +1036,11 @@
 				//^^probably not
 				//gonna need to have it reassign every thing one space over if there is a familiar
 					//move the last one first if team 1
-			
+			//quickness
+				//set up turn() so that it actually works with quickness
+				//balance quickness
+				//spells affecting quickness
+				//enchantments affecting quickness
 			
 			
 
@@ -1067,7 +1071,7 @@ bool FAST_START = false;//checkfast
 
 bool running = 1; //this says the game is on
 int playerInfo[20][25]; //first dimension chooses person 0-player1 1-5-player1's team 6-player2 7-20-player2's-team
-		       // second dimension 0class, 1attack, 2defense, 3health, 4move, 5range, 6Ap, 7mana, 8number, 9x.pos, 10y.pos, 11xp, 12maxHealth, 13maxMana, 14manaRegen, 15level, 16prestige, 17 race, 18 birthRight, 19 renown, 20 prestigeSpecialization, 21 starting mana, 22 miss chance, 23 evasion, 24 engineering, 25 heavinessUsage
+		       // second dimension 0class, 1attack, 2defense, 3health, 4move, 5range, 6Ap, 7mana, 8number, 9x.pos, 10y.pos, 11xp, 12maxHealth, 13maxMana, 14manaRegen, 15level, 16prestige, 17 race, 18 birthRight, 19 renown, 20 prestigeSpecialization, 21 starting mana, 22 miss chance, 23 evasion, 24 quickness, 25 engineering, 26 heavinessUsage
 
 
 int map[100][100][3];//first two dimensions, x and y coords, third dimension [0-person on it or not and who, 1-elevation, 2-map condition
@@ -1167,15 +1171,15 @@ int moveGuy = 0, assignGuy = 0, defender = 0;; //to carry the person whose turn 
 
 
 //here are the original stats for each of the classes
-const int fighter  [1][26] = {1,10,9 ,300,6 ,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,8 ,3, 1,4};
-const int archer   [1][26] = {2,9 ,6 ,300,7 ,20,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,10,8, 1,2};
-const int priest   [1][26] = {3,7 ,5 ,300,7 ,1 ,12,0 ,0,0,0,0,300,250,50,0,0,0,0,0,0,100,8 ,4, 0,3};
-const int berserker[1][26] = {4,13,4 ,400,7 ,1 ,12,0 ,0,0,0,0,400,0  ,0 ,0,0,0,0,0,0,0  ,20,8,-1,3};
-const int knight   [1][26] = {5,9 ,8 ,300,11,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,6 ,3, 0,4};
-const int scout    [1][26] = {6,11,6 ,300,8 ,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,5 ,9, 1,3};
-const int mage     [1][26] = {7,3 ,5 ,300,5 ,5 ,12,0 ,0,0,0,0,300,250,70,0,0,0,0,0,0,100,7 ,5, 0,1};
-const int warlock  [1][26] = {8,6 ,6 ,300,5 ,8 ,12,0 ,0,0,0,0,300,150,60,0,0,0,0,0,0,50 ,12,7, 0,1};
-const int steampunk[1][26] = {9,6, 6 ,300,6 ,1 ,12,0 ,0,0,0,0,300,100,20,0,0,0,0,0,0,20 ,9 ,8, 2,2};
+const int fighter  [1][27] = {1,10,9 ,300,6 ,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,8 ,3,65, 1,4};
+const int archer   [1][27] = {2,10,6 ,300,7 ,20,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,10,8,85, 1,2};
+const int priest   [1][27] = {3,7 ,5 ,300,7 ,1 ,12,0 ,0,0,0,0,300,250,50,0,0,0,0,0,0,100,8 ,4,75, 0,3};
+const int berserker[1][27] = {4,13,4 ,400,7 ,1 ,12,0 ,0,0,0,0,400,0  ,0 ,0,0,0,0,0,0,0  ,20,8,80,-1,3};
+const int knight   [1][27] = {5,9 ,8 ,300,11,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,6 ,3,60, 0,4};
+const int scout    [1][27] = {6,11,6 ,300,8 ,1 ,12,0 ,0,0,0,0,300,0  ,0 ,0,0,0,0,0,0,0  ,5 ,9,85, 1,3};
+const int mage     [1][27] = {7,4 ,5 ,300,5 ,5 ,12,0 ,0,0,0,0,300,250,70,0,0,0,0,0,0,100,7 ,5,70, 0,1};
+const int warlock  [1][27] = {8,6 ,6 ,300,5 ,8 ,12,0 ,0,0,0,0,300,150,60,0,0,0,0,0,0,50 ,12,7,70, 0,1};
+const int steampunk[1][27] = {9,6, 6 ,300,6 ,1 ,12,0 ,0,0,0,0,300,100,20,0,0,0,0,0,0,20 ,9 ,8,75, 2,2};
 	//goherenow
 
 string fighterName =	"Fighter";
@@ -1267,7 +1271,7 @@ int consistantRoll(int indexer, bool display) {
 	
 	switch(indexer) {
 		case 1:
-			output = rd2() + rd2();
+			output = rd2() + rd2() + 2;
 			if (display) {
 				cout << "2d2";
 			}
@@ -2866,7 +2870,7 @@ void learnRaces() {
 		
 		case 7:
 		cout << "Halfling: \n";
-		cout << "Attack - 2\nDefense - 1\nMove + 2\n";
+		cout << "Attack - 1\nDefense - 1\nMove + 2\n";
 		cout << "\nDescription: \n  Halflings may not have very good looking stats, but it is balanced out by how lucky they are. ";
 		cout << "They have a 1/10 chance to dodge regular attacks against them, and this stacks with the scouts ability to do the same.\n";
 		break;
@@ -3303,6 +3307,7 @@ for (x=1; x <= peopleInPlay; x++) {
 		cout << "Range:       " << dude[x].getRange() << endl;
 		cout << "Accuracy:    " << 100 - dude[x].getMissChance() << endl;
 		cout << "Evasion:     " << dude[x].getEvasion() << endl;
+		cout << "Quickness:   " << dude[x].getQuickness() << endl;
 		cout << "XP:          " << dude[x].getXp() << "/" << (500 + (dude[x].getLevel() * 300)) << endl;
 		cout << "Level:       " << dude[x].getLevel() << endl;
 		cout << "Location:    (" << dude[x].getXpos() << "," << dude[x].getYpos() << ")" << endl;
@@ -3432,6 +3437,7 @@ for (x=1; x <= peopleInPlay; x++) {
 		cout << "Range:       " << dude[x].getRange() << endl;
 		cout << "Accuracy:    " << 100 - dude[x].getMissChance() << endl;
 		cout << "Evasion:     " << dude[x].getEvasion() << endl;
+		cout << "Quickness:     " << dude[x].getQuickness() << endl;
 
 		cout << "Status:      ";
 		if (defended[x] > 0) {cout << "Defended: " << defended[x] << "\t";}
@@ -4105,7 +4111,7 @@ void getSaveArmy(int team) {
 void getArmyPeopleSaves(int team) {
 	ifstream saves;
 	string characterChoice, line, classStatString, attackStatString, defenseStatString, moveStatString, rangeStatString, xpStatString, healthStatString, manaStatString, regenStatString, levelStatString, prestigeStatString;
-	string raceStatString, birthRightStatString, renownStatString, prestigeSpecializationStatString, startingManaStatString, accuracyStatString, evasionStatString, engineeringStatString, heavinessUsageStatString;
+	string raceStatString, birthRightStatString, renownStatString, prestigeSpecializationStatString, startingManaStatString, accuracyStatString, evasionStatString, quicknessStatString, engineeringStatString, heavinessUsageStatString;
 	string numberOfInventoryItemsString, numberOfEquippedItemsString;
 	string itemNameString, itemEquipSlotString, itemMaterialConditionString, itemDurabilityString, itemDamageResistString, itemResistFireString, itemResistColdString;
 	string itemResistLightningString, itemResistLightString, itemResistDarkString, itemResistPoisonString, itemResistManaEnergyString;
@@ -4115,11 +4121,11 @@ void getArmyPeopleSaves(int team) {
 	string itemDamageLightningString, itemDamageLightString, itemDamageDarkString, itemDamagePoisonString, itemDamageManaEnergyString;
 	string itemDamageBludgeoningString, itemDamageSlashingString, itemDamagePiercingString;
 	
-	string itemBaseAttackString, itemHeavinessString, itemPriceString, itemLevelString, itemAccuracyString, itemToHitString, itemEvasionString;
+	string itemBaseAttackString, itemHeavinessString, itemPriceString, itemLevelString, itemAccuracyString, itemToHitString, itemEvasionString, itemQuicknessString;
 	string itemMaterialTypeString, itemMaterialString;
 	
 	int classStat, attackStat, defenseStat, moveStat, rangeStat, xpStat, healthStat, manaStat, regenStat, levelStat, prestigeStat;
-	int	raceStat, birthRightStat, renownStat, prestigeSpecializationStat, startingManaStat, accuracyStat, evasionStat, engineeringStat, heavinessUsageStat;
+	int	raceStat, birthRightStat, renownStat, prestigeSpecializationStat, startingManaStat, accuracyStat, evasionStat, quicknessStat, engineeringStat, heavinessUsageStat;
 	int numberOfInventoryItems, numberOfEquippedItems;
 	int itemMaterialConditionStat, itemDurabilityStat, itemDamageResistStat, itemResistFireStat, itemResistColdStat;
 	int itemResistLightningStat, itemResistLightStat, itemResistDarkStat, itemResistPoisonStat, itemResistManaEnergyStat;
@@ -4129,7 +4135,7 @@ void getArmyPeopleSaves(int team) {
 	int itemDamageLightningStat, itemDamageLightStat, itemDamageDarkStat, itemDamagePoisonStat, itemDamageManaEnergyStat;
 	int itemDamageBludgeoningStat, itemDamageSlashingStat, itemDamagePiercingStat;
 	
-	int itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat;
+	int itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat, itemQuicknessStat;
 	bool leave = 0;
 	
 	
@@ -4190,6 +4196,7 @@ void getArmyPeopleSaves(int team) {
 						getline(saves, startingManaStatString);
 						getline(saves, accuracyStatString);
 						getline(saves, evasionStatString);
+						getline(saves, quicknessStatString);
 						getline(saves, engineeringStatString);
 						getline(saves, heavinessUsageStatString);
 						getline(saves, numberOfEquippedItemsString);
@@ -4232,6 +4239,7 @@ void getArmyPeopleSaves(int team) {
 								getline(saves, itemAccuracyString);
 								getline(saves, itemToHitString);
 								getline(saves, itemEvasionString);
+								getline(saves, itemQuicknessString);
 								
 								
 								istringstream ( itemMaterialConditionString ) >> itemMaterialConditionStat;
@@ -4269,8 +4277,9 @@ void getArmyPeopleSaves(int team) {
 								istringstream ( itemAccuracyString ) >> itemAccuracyStat;
 								istringstream ( itemToHitString ) >> itemToHitStat;
 								istringstream ( itemEvasionString ) >> itemEvasionStat;
+								istringstream ( itemQuicknessString ) >> itemQuicknessStat;
 								
-								equipment tempItem = equipment(itemNameString, itemEquipSlotString, itemMaterialTypeString, itemMaterialString, itemMaterialConditionStat, itemDurabilityStat, itemDamageResistStat, itemResistFireStat, itemResistColdStat, itemResistLightningStat, itemResistLightStat, itemResistDarkStat, itemResistPoisonStat, itemResistManaEnergyStat, itemResistBludgeoningStat, itemResistSlashingStat, itemResistPiercingStat, itemDamageFireStat, itemDamageColdStat, itemDamageLightningStat, itemDamageLightStat, itemDamageDarkStat, itemDamagePoisonStat, itemDamageManaEnergyStat, itemDamageBludgeoningStat, itemDamageSlashingStat, itemDamagePiercingStat, itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat);
+								equipment tempItem = equipment(itemNameString, itemEquipSlotString, itemMaterialTypeString, itemMaterialString, itemMaterialConditionStat, itemDurabilityStat, itemDamageResistStat, itemResistFireStat, itemResistColdStat, itemResistLightningStat, itemResistLightStat, itemResistDarkStat, itemResistPoisonStat, itemResistManaEnergyStat, itemResistBludgeoningStat, itemResistSlashingStat, itemResistPiercingStat, itemDamageFireStat, itemDamageColdStat, itemDamageLightningStat, itemDamageLightStat, itemDamageDarkStat, itemDamagePoisonStat, itemDamageManaEnergyStat, itemDamageBludgeoningStat, itemDamageSlashingStat, itemDamagePiercingStat, itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat, itemQuicknessStat);
 								
 								dude[assignGuy].equip(tempItem);
 								//goherenowben
@@ -4317,6 +4326,7 @@ void getArmyPeopleSaves(int team) {
 								getline(saves, itemAccuracyString);
 								getline(saves, itemToHitString);
 								getline(saves, itemEvasionString);
+								getline(saves, itemQuicknessString);
 								
 								istringstream ( itemMaterialConditionString ) >> itemMaterialConditionStat;
 								istringstream ( itemDurabilityString ) >> itemDurabilityStat;
@@ -4351,9 +4361,10 @@ void getArmyPeopleSaves(int team) {
 								istringstream ( itemAccuracyString ) >> itemAccuracyStat;
 								istringstream ( itemToHitString ) >> itemToHitStat;
 								istringstream ( itemEvasionString ) >> itemEvasionStat;
+								istringstream ( itemQuicknessString ) >> itemQuicknessStat;
 								
 								
-								equipment tempItem = equipment(itemNameString, itemEquipSlotString, itemMaterialTypeString, itemMaterialString, itemMaterialConditionStat, itemDurabilityStat, itemDamageResistStat, itemResistFireStat, itemResistColdStat, itemResistLightningStat, itemResistLightStat, itemResistDarkStat, itemResistPoisonStat, itemResistManaEnergyStat, itemResistBludgeoningStat, itemResistSlashingStat, itemResistPiercingStat, itemDamageFireStat, itemDamageColdStat, itemDamageLightningStat, itemDamageLightStat, itemDamageDarkStat, itemDamagePoisonStat, itemDamageManaEnergyStat, itemDamageBludgeoningStat, itemDamageSlashingStat, itemDamagePiercingStat, itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat);
+								equipment tempItem = equipment(itemNameString, itemEquipSlotString, itemMaterialTypeString, itemMaterialString, itemMaterialConditionStat, itemDurabilityStat, itemDamageResistStat, itemResistFireStat, itemResistColdStat, itemResistLightningStat, itemResistLightStat, itemResistDarkStat, itemResistPoisonStat, itemResistManaEnergyStat, itemResistBludgeoningStat, itemResistSlashingStat, itemResistPiercingStat, itemDamageFireStat, itemDamageColdStat, itemDamageLightningStat, itemDamageLightStat, itemDamageDarkStat, itemDamagePoisonStat, itemDamageManaEnergyStat, itemDamageBludgeoningStat, itemDamageSlashingStat, itemDamagePiercingStat, itemBaseAttackStat, itemHeavinessStat, itemPriceStat, itemLevelStat, itemAccuracyStat, itemToHitStat, itemEvasionStat, itemQuicknessStat);
 								
 								dude[assignGuy].putInInventory(tempItem);
 								//goherenowben
@@ -4373,6 +4384,7 @@ void getArmyPeopleSaves(int team) {
 						cout << "Range:        " << rangeStatString << endl;
 						cout << "Accuracy:     " << accuracyStatString << endl;
 						cout << "Evasion:      " << evasionStatString << endl;
+						cout << "Quickness:    " << quicknessStatString << endl;
 						cout << "Max health:   " << healthStatString << endl;
 						cout << "Starting mana:" << startingManaStatString << endl;
 						cout << "Max mana:     " << manaStatString << endl;
@@ -4414,6 +4426,7 @@ void getArmyPeopleSaves(int team) {
 		istringstream ( startingManaStatString ) >> startingManaStat;
 		istringstream ( accuracyStatString ) >> accuracyStat;
 		istringstream ( evasionStatString ) >> evasionStat;
+		istringstream ( quicknessStatString ) >> quicknessStat;
 		istringstream ( engineeringStatString ) >> engineeringStat;
 		istringstream ( heavinessUsageStatString ) >> heavinessUsageStat;
 		
@@ -4442,6 +4455,7 @@ void getArmyPeopleSaves(int team) {
 	dude[assignGuy].setStartingMana(startingManaStat);
 	dude[assignGuy].setMissChance(accuracyStat);
 	dude[assignGuy].setEvasion(evasionStat);
+	dude[assignGuy].setQuickness(quicknessStat);
 	dude[assignGuy].setEngineering(engineeringStat);
 	dude[assignGuy].setHeavinessUsage(heavinessUsageStat);
 	
@@ -4571,6 +4585,7 @@ void saveArmy(int team) {
 				saves << dude[saveCharacter].getStartingManaStat() << endl;
 				saves << dude[saveCharacter].getMissChanceStat() << endl;
 				saves << dude[saveCharacter].getEvasionStat() << endl;
+				saves << dude[saveCharacter].getQuicknessStat() << endl;
 				saves << dude[saveCharacter].getEngineeringStat() << endl;
 				saves << dude[saveCharacter].getHeavinessUsageStat() << endl;
 				
@@ -4613,6 +4628,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].head.accuracy << endl;
 					saves << dude[saveCharacter].head.toHit << endl;
 					saves << dude[saveCharacter].head.evasion << endl;
+					saves << dude[saveCharacter].head.quickness << endl;
 				}
 				if (dude[saveCharacter].torso.equipSlot != "null" && dude[saveCharacter].torso.equipSlot != "") {
 					saves << dude[saveCharacter].torso.name << endl;
@@ -4651,6 +4667,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].torso.accuracy << endl;
 					saves << dude[saveCharacter].torso.toHit << endl;
 					saves << dude[saveCharacter].torso.evasion << endl;
+					saves << dude[saveCharacter].torso.quickness << endl;
 				}
 				if (dude[saveCharacter].shoulders.equipSlot != "null" && dude[saveCharacter].shoulders.equipSlot != "") {
 					saves << dude[saveCharacter].shoulders.name << endl;
@@ -4689,6 +4706,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].shoulders.accuracy << endl;
 					saves << dude[saveCharacter].shoulders.toHit << endl;
 					saves << dude[saveCharacter].shoulders.evasion << endl;
+					saves << dude[saveCharacter].shoulders.quickness << endl;
 				}
 				if (dude[saveCharacter].arms.equipSlot != "null" && dude[saveCharacter].arms.equipSlot != "") {
 					saves << dude[saveCharacter].arms.name << endl;
@@ -4727,6 +4745,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].shoulders.accuracy << endl;
 					saves << dude[saveCharacter].shoulders.toHit << endl;
 					saves << dude[saveCharacter].shoulders.evasion << endl;
+					saves << dude[saveCharacter].shoulders.quickness << endl;
 				}
 				if (dude[saveCharacter].hands.equipSlot != "null" && dude[saveCharacter].hands.equipSlot != "") {
 					saves << dude[saveCharacter].hands.name << endl;
@@ -4765,6 +4784,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].hands.accuracy << endl;
 					saves << dude[saveCharacter].hands.toHit << endl;
 					saves << dude[saveCharacter].hands.evasion << endl;
+					saves << dude[saveCharacter].hands.quickness << endl;
 				}
 				if (dude[saveCharacter].legs.equipSlot != "null" && dude[saveCharacter].legs.equipSlot != "") {
 					saves << dude[saveCharacter].legs.name << endl;
@@ -4803,6 +4823,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].legs.accuracy << endl;
 					saves << dude[saveCharacter].legs.toHit << endl;
 					saves << dude[saveCharacter].legs.evasion << endl;
+					saves << dude[saveCharacter].legs.quickness << endl;
 				}
 				if (dude[saveCharacter].feet.equipSlot != "null" && dude[saveCharacter].feet.equipSlot != "") {
 					saves << dude[saveCharacter].feet.name << endl;
@@ -4841,6 +4862,7 @@ void saveArmy(int team) {
 					saves << dude[saveCharacter].feet.accuracy << endl;
 					saves << dude[saveCharacter].feet.toHit << endl;
 					saves << dude[saveCharacter].feet.evasion << endl;
+					saves << dude[saveCharacter].feet.quickness << endl;
 				}
 				
 				saves << dude[saveCharacter].numberOfItemsInInventory() << endl;
@@ -4883,6 +4905,7 @@ void saveArmy(int team) {
 						saves << dude[saveCharacter].inventory[inventoryItem].accuracy << endl;
 						saves << dude[saveCharacter].inventory[inventoryItem].toHit << endl;
 						saves << dude[saveCharacter].inventory[inventoryItem].evasion << endl;
+						saves << dude[saveCharacter].inventory[inventoryItem].quickness << endl;
 					}
 				}
 			}
@@ -5010,9 +5033,9 @@ void saveArmy(int team) {
 void getSave() {
 	ifstream saves;
 	string characterChoice, line, classStatString, attackStatString, defenseStatString, moveStatString, rangeStatString, xpStatString, healthStatString, manaStatString, regenStatString, levelStatString, prestigeStatString;
-	string raceStatString, birthRightStatString, renownStatString, prestigeSpecializationStatString, startingManaStatString, accuracyStatString, evasionStatString;
+	string raceStatString, birthRightStatString, renownStatString, prestigeSpecializationStatString, startingManaStatString, accuracyStatString, evasionStatString, quicknessStatString;
 	int classStat, attackStat, defenseStat, moveStat, rangeStat, xpStat, healthStat, manaStat, regenStat, levelStat, prestigeStat;
-	int	raceStat, birthRightStat, renownStat, prestigeSpecializationStat, startingManaStat, accuracyStat, evasionStat;
+	int	raceStat, birthRightStat, renownStat, prestigeSpecializationStat, startingManaStat, accuracyStat, evasionStat, quicknessStat;
 	bool leave = 0;
 	
 	saves.open("saves.txt"); //opens the file
@@ -5049,6 +5072,7 @@ void getSave() {
 				  getline(saves, startingManaStatString);
 				  getline(saves, accuracyStatString);
 				  getline(saves, evasionStatString);
+				  getline(saves, quicknessStatString);
 				  
 				  
 				  pos=line.find(characterChoice); // search
@@ -5067,6 +5091,7 @@ void getSave() {
 						cout << "Range:        " << rangeStatString << endl;
 						cout << "Accuracy:     " << accuracyStatString << endl;
 						cout << "Evasion:      " << evasionStatString << endl;
+						cout << "Quickness:    " << quicknessStatString << endl;
 						cout << "Max health:   " << healthStatString << endl;
 						cout << "Starting mana:" << startingManaStatString << endl;
 						cout << "Max mana:     " << manaStatString << endl;
@@ -5107,6 +5132,7 @@ void getSave() {
 		istringstream ( startingManaStatString ) >> startingManaStat;
 		istringstream ( accuracyStatString ) >> accuracyStat;
 		istringstream ( evasionStatString ) >> evasionStat;
+		istringstream ( quicknessStatString ) >> quicknessStat;
 
 		/*
 		classStat = stoi (classStatString, 0, 10);  //converts them into ints
@@ -5153,6 +5179,7 @@ void getSave() {
 	dude[assignGuy].setStartingMana(startingManaStat);
 	dude[assignGuy].setMissChance(accuracyStat);
 	dude[assignGuy].setEvasion(evasionStat);
+	dude[assignGuy].setQuickness(quicknessStat);
 	
 	dude[assignGuy].setName(line);
 	
@@ -5301,6 +5328,7 @@ void savegame() {
 	saves << dude[saveCharacter].getStartingManaStat() << endl;
 	saves << dude[saveCharacter].getMissChanceStat() << endl;
 	saves << dude[saveCharacter].getEvasionStat() << endl;
+	saves << dude[saveCharacter].getQuicknessStat() << endl;
 			
 		
 
@@ -6411,10 +6439,10 @@ void levelUp() {
 				
 				if(dude[x].getLevel() %  2 == 0) { //on even levels they get to raise a stat
 					cout << "\nWhat stat would you like to raise?\n1: Attack+1\n2: Defense+1\n3: Movement+1\n4: Max health+50\n";
-					cout << "5: Accuracy+2\n6: Evasion+2\n";
-					if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() != 9) {cout << "7: Starting mana+50\n8: Max mana+50\n9: Mana regen+10\n";}
-					if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() == 9) {cout << "7: Starting psi+5\n8: Max psi+5\n9: Psi regen+1\n";}
-					if (dude[x].getRange() > 3) { cout << "10:Range+3\n"; }
+					cout << "5: Accuracy+2\n6: Evasion+2\n7: Quickness+5\n";
+					if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() != 9) {cout << "8: Starting mana+50\n9: Max mana+50\n10: Mana regen+10\n";}
+					if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() == 9) {cout << "8: Starting psi+5\n9: Max psi+5\n10: Psi regen+1\n";}
+					if (dude[x].getRange() > 3) { cout << "11:Range+3\n"; }
 					
 					cin >> statchoice;
 					
@@ -6424,17 +6452,18 @@ void levelUp() {
 					if (statchoice == 4) {dude[x].setMaxHealth(dude[x].getMaxHealthStat() + 50); dude[x].setHealth(dude[x].getHealth() + 50);}//raises max and current health
 					if (statchoice == 5) {dude[x].setMissChance(dude[x].getMissChanceStat() - 2);}//lower chance to miss
 					if (statchoice == 6) {dude[x].setEvasion(dude[x].getEvasionStat() + 2);}//raises evasion
+					if (statchoice == 7) {dude[x].setQuickness(dude[x].getQuicknessStat() + 5);}//raises quickness
 					if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() != 9) {
-						if (statchoice == 7) {dude[x].setStartingMana(dude[x].getStartingManaStat() + 50);}//raises starting mana
-						if (statchoice == 8) {dude[x].setMaxMana(dude[x].getMaxManaStat() + 50);}//raises max mana
-						if (statchoice == 9) {dude[x].setManaRegen(dude[x].getManaRegenStat() + 10);}//raises mana regen
+						if (statchoice == 8) {dude[x].setStartingMana(dude[x].getStartingManaStat() + 50);}//raises starting mana
+						if (statchoice == 9) {dude[x].setMaxMana(dude[x].getMaxManaStat() + 50);}//raises max mana
+						if (statchoice == 10) {dude[x].setManaRegen(dude[x].getManaRegenStat() + 10);}//raises mana regen
 					}
 					else if (dude[x].getMaxManaStat() > 0 && dude[x].getCharacterClass() == 9) {
-						if (statchoice == 7) {dude[x].setStartingMana(dude[x].getStartingManaStat() + 5);}//raises starting psi
-						if (statchoice == 8) {dude[x].setMaxMana(dude[x].getMaxManaStat() + 5);}//raises max psi
-						if (statchoice == 9) {dude[x].setManaRegen(dude[x].getManaRegenStat() + 1);}//raises psi regen
+						if (statchoice == 8) {dude[x].setStartingMana(dude[x].getStartingManaStat() + 5);}//raises starting psi
+						if (statchoice == 9) {dude[x].setMaxMana(dude[x].getMaxManaStat() + 5);}//raises max psi
+						if (statchoice == 10) {dude[x].setManaRegen(dude[x].getManaRegenStat() + 1);}//raises psi regen
 					}
-					if (statchoice == 10) {dude[x].setRange(dude[x].getRangeStat() + 3);}//raises range
+					if (statchoice == 11) {dude[x].setRange(dude[x].getRangeStat() + 3);}//raises range
 				}					
 				if (dude[x].getMaxManaStat() > 0) {//checks if they are a spellcaster to raise mana pool always, and regen on odd levels
 					int manaRaise = 25;
@@ -6798,6 +6827,7 @@ void infodump() {
 				hall_of_heroes << "Range:       " << dude[x].getRange() << endl;
 				hall_of_heroes << "Accuracy:    " << 100 - dude[x].getMissChance() << endl;
 				hall_of_heroes << "Evasion:     " << dude[x].getEvasion() << endl;
+				hall_of_heroes << "Quickness:   " << dude[x].getQuickness() << endl;
 				hall_of_heroes << "XP:          " << dude[x].getXp() << "/" << (500 + (dude[x].getLevel() * 300)) << endl;
 				hall_of_heroes << "Level:       " << dude[x].getLevel() << endl;
 				hall_of_heroes << "Location:    (" << dude[x].getXpos() << "," << dude[x].getYpos() << ")" << endl;
@@ -6879,6 +6909,7 @@ void moreRandom() {
 					dude[i].setMaxHealth(dude[i].getMaxHealthStat() + (50 * upOrDown() ) ); //max health
 					dude[i].setHealth(dude[i].getMaxHealth()); //health
 					dude[i].setEvasion(dude[i].getEvasionStat() + (2 * upOrDown() ) ); //evasion
+					dude[i].setQuickness(dude[i].getQuicknessStat() + (2 * upOrDown() ) ); //quickness
 					dude[i].setMissChance(dude[i].getMissChanceStat() + (2 * upOrDown() ) ); //accuracy
 					
 					if (dude[i].getMaxManaStat() > 0 && dude[i].getCharacterClass() != 9) {
@@ -10657,8 +10688,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(fighter[0][21]);
 			dude[l].setMissChance(fighter[0][22]);
 			dude[l].setEvasion(fighter[0][23]);
-			dude[l].setEngineering(fighter[0][24]);
-			dude[l].setHeavinessUsage(fighter[0][25]);
+			dude[l].setQuickness(fighter[0][24]);
+			dude[l].setEngineering(fighter[0][25]);
+			dude[l].setHeavinessUsage(fighter[0][26]);
 			dude[l].setResistManaEnergy(dude[l].getResistManaEnergy() - 10);
 			
 			
@@ -10683,8 +10715,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(archer[0][21]);
 			dude[l].setMissChance(archer[0][22]);
 			dude[l].setEvasion(archer[0][23]);
-			dude[l].setEngineering(archer[0][24]);
-			dude[l].setHeavinessUsage(archer[0][25]);
+			dude[l].setQuickness(archer[0][24]);
+			dude[l].setEngineering(archer[0][25]);
+			dude[l].setHeavinessUsage(archer[0][26]);
 
 		break;
 		case 3:
@@ -10707,8 +10740,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(priest[0][21]);
 			dude[l].setMissChance(priest[0][22]);
 			dude[l].setEvasion(priest[0][23]);
-			dude[l].setEngineering(priest[0][24]);
-			dude[l].setHeavinessUsage(priest[0][25]);
+			dude[l].setQuickness(priest[0][24]);
+			dude[l].setEngineering(priest[0][25]);
+			dude[l].setHeavinessUsage(priest[0][26]);
 			dude[l].setResistLight(dude[l].getResistLight() + 5);
 			dude[l].setResistDark(dude[l].getResistDark() + 5);
 
@@ -10733,8 +10767,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(berserker[0][21]);
 			dude[l].setMissChance(berserker[0][22]);
 			dude[l].setEvasion(berserker[0][23]);
-			dude[l].setEngineering(berserker[0][24]);
-			dude[l].setHeavinessUsage(berserker[0][25]);
+			dude[l].setQuickness(berserker[0][24]);
+			dude[l].setEngineering(berserker[0][25]);
+			dude[l].setHeavinessUsage(berserker[0][26]);
 
 		break;
 		case 5:
@@ -10757,8 +10792,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(knight[0][21]);
 			dude[l].setMissChance(knight[0][22]);
 			dude[l].setEvasion(knight[0][23]);
-			dude[l].setEngineering(knight[0][24]);
-			dude[l].setHeavinessUsage(knight[0][25]);
+			dude[l].setQuickness(knight[0][24]);
+			dude[l].setEngineering(knight[0][25]);
+			dude[l].setHeavinessUsage(knight[0][26]);
 			dude[l].setResistManaEnergy(dude[l].getResistManaEnergy() - 5);
 
 		break;
@@ -10782,8 +10818,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(scout[0][21]);
 			dude[l].setMissChance(scout[0][22]);
 			dude[l].setEvasion(scout[0][23]);
-			dude[l].setEngineering(scout[0][24]);
-			dude[l].setHeavinessUsage(scout[0][25]);
+			dude[l].setQuickness(scout[0][24]);
+			dude[l].setEngineering(scout[0][25]);
+			dude[l].setHeavinessUsage(scout[0][26]);
 			dude[l].setResistPoison(dude[l].getResistPoison() + 5);
 
 		break;
@@ -10807,8 +10844,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(mage[0][21]);
 			dude[l].setMissChance(mage[0][22]);
 			dude[l].setEvasion(mage[0][23]);
-			dude[l].setEngineering(mage[0][24]);
-			dude[l].setHeavinessUsage(mage[0][25]);
+			dude[l].setQuickness(mage[0][24]);
+			dude[l].setEngineering(mage[0][25]);
+			dude[l].setHeavinessUsage(mage[0][26]);
 
 		break;
 		case 8:
@@ -10831,8 +10869,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(warlock[0][21]);
 			dude[l].setMissChance(warlock[0][22]);
 			dude[l].setEvasion(warlock[0][23]);
-			dude[l].setEngineering(warlock[0][24]);
-			dude[l].setHeavinessUsage(warlock[0][25]);
+			dude[l].setQuickness(warlock[0][24]);
+			dude[l].setEngineering(warlock[0][25]);
+			dude[l].setHeavinessUsage(warlock[0][26]);
 
 		break;
 		case 9:
@@ -10855,8 +10894,9 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setStartingMana(steampunk[0][21]);
 			dude[l].setMissChance(steampunk[0][22]);
 			dude[l].setEvasion(steampunk[0][23]);
-			dude[l].setEngineering(steampunk[0][24]);
-			dude[l].setHeavinessUsage(steampunk[0][25]);
+			dude[l].setQuickness(steampunk[0][24]);
+			dude[l].setEngineering(steampunk[0][25]);
+			dude[l].setHeavinessUsage(steampunk[0][26]);
 
 		break;
 		
@@ -11139,6 +11179,7 @@ for (l=1; l <= peopleInPlay; l++){
 			}
 			dude[l].setMove(dude[l].getMove() + 1);//move
 			dude[l].setResistPoison(dude[l].getResistPoison() + 10);
+			dude[l].setQuickness(dude[l].getQuicknessStat() + 5);//quickness
 		break;
 		case 3://high elf
 			dude[l].setDefense(dude[l].getDefense() - 1);//defense
@@ -11155,12 +11196,14 @@ for (l=1; l <= peopleInPlay; l++){
 				dude[l].setStartingMana(dude[l].getStartingMana() + 5);//mana
 			}
 			dude[l].setResistManaEnergy(dude[l].getResistManaEnergy() + 5);
+			dude[l].setQuickness(dude[l].getQuicknessStat() + 3);//quickness
 		break;
 		case 4://dark elf
 			dude[l].setAttack(dude[l].getAttack() + 3);//attack
 			dude[l].setDefense(dude[l].getDefense() - 2);//defense
 			dude[l].setMove(dude[l].getMove() + 2);//move
 			dude[l].setResistLight(dude[l].getResistLight() - 5);
+			dude[l].setQuickness(dude[l].getQuicknessStat() + 5);//quickness
 		break;
 		case 5://hill dwarf
 			dude[l].setAttack(dude[l].getAttack() + 1);//attack
@@ -11170,6 +11213,7 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setResistBludgeoning(dude[l].getResistBludgeoning() + 3);
 			dude[l].setResistSlashing(dude[l].getResistSlashing() + 3);
 			dude[l].setResistPiercing(dude[l].getResistPiercing() + 3);
+			dude[l].setQuickness(dude[l].getQuicknessStat() - 3);//quickness
 		break;
 		case 6://mountain dwarf
 			dude[l].setAttack(dude[l].getAttack() + 1);//attack
@@ -11181,11 +11225,13 @@ for (l=1; l <= peopleInPlay; l++){
 			dude[l].setResistBludgeoning(dude[l].getResistBludgeoning() + 5);
 			dude[l].setResistSlashing(dude[l].getResistSlashing() + 5);
 			dude[l].setResistPiercing(dude[l].getResistPiercing() + 5);
+			dude[l].setQuickness(dude[l].getQuicknessStat() - 5);//quickness
 		break;
 		case 7://halfling
-			dude[l].setAttack(dude[l].getAttack() - 2);//attack
+			dude[l].setAttack(dude[l].getAttack() - 1);//attack
 			dude[l].setDefense(dude[l].getDefense() - 1);//defense
 			dude[l].setMove(dude[l].getMove() + 2);//move
+			dude[l].setQuickness(dude[l].getQuicknessStat() + 5);//quickness
 		break;
 		case 8://orc
 			dude[l].setAttack(dude[l].getAttack() + 2);//attack
@@ -12136,7 +12182,7 @@ if (needToReload[moveGuy] > 0) {
 				heightDifferenceSquared = (heightDefender-heightAttacker)*(heightDefender-heightAttacker);
 				//how many groups of 5 they are away, and adds 1 so that it can't be zero
 				sectionsAway = sqrt(abs(distanceSquared + heightDifferenceSquared)) / 5 + 1;
-				if (dude[moveGuy].getPrestige() == 201) {//crossbow is more accurate at close range
+				if (dude[moveGuy].getPrestige() == 201) {//crossbow is better than a bow at close range
 					sectionsAway--;
 				}
 				//the chance to miss times the multiples of 5 away that the enemy is
@@ -12284,7 +12330,7 @@ if (needToReload[moveGuy] > 0) {
 					if (army[dude[defender].getTeam() ][0]) { armyGainMoney(dude[defender].getTeam(), (10) * 2);}
 					
 					
-					defenseRoll = characterRoll(moveGuy,false,false);
+					defenseRoll = characterRoll(defender,false,false);
 					cout << endl << dude[defender].getName() << " was able help himself after a fumble with a " << defenseRoll << endl;
 					dramaticPause();
 					}
@@ -12298,8 +12344,9 @@ if (needToReload[moveGuy] > 0) {
 						dude[moveGuy].setXp(dude[moveGuy].getXp() + 10);	//adds xp
 						if (army[dude[moveGuy].getTeam() ][0]) { armyGainMoney(dude[moveGuy].getTeam(), (10) * 2);}
 						
-						cout << endl << dude[moveGuy].getName() << " was able to help himself after a fumble and gets ";
 						attackRoll = characterRoll(moveGuy,true,false);
+						cout << endl << dude[moveGuy].getName() << " was able to help himself after a fumble and gets " << attackRoll << endl;
+						
 						dramaticPause();
 					}
 					
@@ -12346,6 +12393,7 @@ if (needToReload[moveGuy] > 0) {
 							druidBoostDefense = dude[defender].getDefense() * 10 / 3;
 						}	
 					}
+					
 					
 					damage = dude[moveGuy].getAttack() * 10 + attackRoll * 10 + druidBoostAttack + heightBonus - dude[defender].getDefense() * 10 - defenseRoll * 10 - druidBoostDefense; //calculates the damage done
 					
@@ -12439,6 +12487,7 @@ if (needToReload[moveGuy] > 0) {
 						damage = damage - defended[defender];
 					}
 					
+					
 					checkBloodlust();	
 					checkCrit();
 					checkNewPoison();
@@ -12460,6 +12509,11 @@ if (needToReload[moveGuy] > 0) {
 			
 					//does damage here if there is damage, and the defender didn't tumble, and there was no coup de grace
 					if (damage > 0 && tumble == 0 && !(dude[moveGuy].getPrestigeSpecialization() == 3012 && (dude[defender].getMaxHealth() / dude[defender].getHealth() >= 10)) && !(usingIceTouch)) {
+								int rangeDamageLossPercent = (sectionsAway - 1) * 10;
+								//cout << "Damage loss percent from range is " << rangeDamageLossPercent << endl;
+								//cout << "Damage before " << damage;
+								damage = damage - damage * rangeDamageLossPercent / 100;//10% damage loss per 5 squares
+								//cout << " and after " << damage << endl;
 								checkCharge();	
 								checkBullrush();
 								checkEnchantWeapon();
@@ -13477,7 +13531,7 @@ void turn() {
 	
 	//dynamic teams this is where I will implement the agility
 	//endingpoint
-	for (i=1; i <= peopleInPlay; i++){ //team1 moves and attacks
+	for (i=1; i <= peopleInPlay; i++){
 		mainMap.updateManaUnderlayEffects();
 		mainMap.manaCloudUpdate();
 		mainMap.addManaClouds(5,mapArea / 500,1,mapArea / 250, 0, 50, 0, 5, 25,75,2,10);
