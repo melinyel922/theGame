@@ -16,12 +16,13 @@ class equipment	{
 	int accuracy;
 	int toHit;
 	int evasion;
+	int quickness;
 	int materialCondition;
 	
 	
-	equipment(): name(""), materialType(""), material(""), materialCondition(0), durability(0), equipmentDamageResist(0), equipSlot(""), equipmentResistFire(0), equipmentResistCold(0), equipmentResistLightning(0), equipmentResistLight(0), equipmentResistDark(0), equipmentResistPoison(0), equipmentResistManaEnergy(0), equipmentResistBludgeoning(0), equipmentResistSlashing(0), equipmentResistPiercing(0), equipmentDamageFire(0), equipmentDamageCold(0), equipmentDamageLightning(0), equipmentDamageLight(0), equipmentDamageDark(0), equipmentDamagePoison(0), equipmentDamageManaEnergy(0), equipmentDamageBludgeoning(0), equipmentDamageSlashing(0), equipmentDamagePiercing(0), equipmentBaseAttack(0), heaviness(0), price(0), level(0), accuracy(0), toHit(0), evasion(0)  {}
+	equipment(): name(""), materialType(""), material(""), materialCondition(0), durability(0), equipmentDamageResist(0), equipSlot(""), equipmentResistFire(0), equipmentResistCold(0), equipmentResistLightning(0), equipmentResistLight(0), equipmentResistDark(0), equipmentResistPoison(0), equipmentResistManaEnergy(0), equipmentResistBludgeoning(0), equipmentResistSlashing(0), equipmentResistPiercing(0), equipmentDamageFire(0), equipmentDamageCold(0), equipmentDamageLightning(0), equipmentDamageLight(0), equipmentDamageDark(0), equipmentDamagePoison(0), equipmentDamageManaEnergy(0), equipmentDamageBludgeoning(0), equipmentDamageSlashing(0), equipmentDamagePiercing(0), equipmentBaseAttack(0), heaviness(0), price(0), level(0), accuracy(0), toHit(0), evasion(0), quickness(0)  {}
 	
-	equipment( string Name, string EquipSlot, string MaterialType, string Material, int MaterialCondition, int Durability, int EquipmentDamageResist, int EquipmentResistFire, int EquipmentResistCold, int EquipmentResistLightning, int EquipmentResistLight, int EquipmentResistDark, int EquipmentResistPoison, int EquipmentResistManaEnergy, int EquipmentResistSlashing, int EquipmentResistBludgeoning, int EquipmentResistPiercing, int EquipmentDamageFire, int EquipmentDamageCold, int EquipmentDamageLightning, int EquipmentDamageLight, int EquipmentDamageDark, int EquipmentDamagePoison, int EquipmentDamageManaEnergy, int EquipmentDamageSlashing, int EquipmentDamageBludgeoning, int EquipmentDamagePiercing, int EquipmentBaseAttack, int Heaviness, int Price, int Level, int Accuracy, int ToHit, int Evasion) {
+	equipment( string Name, string EquipSlot, string MaterialType, string Material, int MaterialCondition, int Durability, int EquipmentDamageResist, int EquipmentResistFire, int EquipmentResistCold, int EquipmentResistLightning, int EquipmentResistLight, int EquipmentResistDark, int EquipmentResistPoison, int EquipmentResistManaEnergy, int EquipmentResistSlashing, int EquipmentResistBludgeoning, int EquipmentResistPiercing, int EquipmentDamageFire, int EquipmentDamageCold, int EquipmentDamageLightning, int EquipmentDamageLight, int EquipmentDamageDark, int EquipmentDamagePoison, int EquipmentDamageManaEnergy, int EquipmentDamageSlashing, int EquipmentDamageBludgeoning, int EquipmentDamagePiercing, int EquipmentBaseAttack, int Heaviness, int Price, int Level, int Accuracy, int ToHit, int Evasion, int Quickness) {
 		name = Name;
 		equipSlot = EquipSlot;
 		materialType = MaterialType;
@@ -59,6 +60,7 @@ class equipment	{
 		accuracy = Accuracy;
 		toHit = ToHit;
 		evasion = Evasion;
+		quickness = Quickness;
 	}
 	
 	void makeNull() {
@@ -99,6 +101,7 @@ class equipment	{
 		accuracy = 0;
 		toHit = 0;
 		evasion = 0;
+		quickness = 0;
 	}
 	
 	int getClassifier() {
@@ -166,6 +169,9 @@ class equipment	{
 			}
 			if (evasion) {
 				cout << "Evasion:           " << evasion << endl;
+			}
+			if (quickness) {
+				cout << "Quickness:         " << quickness << endl;
 			}
 			if (equipmentResistFire) {
 				cout << "Resist fire        " << equipmentResistFire << endl;
@@ -242,6 +248,9 @@ class equipment	{
 	void setAccuracy(int Accuracy) {accuracy = Accuracy;}
 	int getEvasion() {return evasion;}
 	void setEvasion(int Evasion) {evasion = Evasion;}
+	
+	int getQuickness() {return quickness;}
+	void setQuickness(int Quickness) {quickness = Quickness;}
 	
 	
 	int getToHit() {return toHit;}
