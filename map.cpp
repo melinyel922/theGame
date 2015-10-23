@@ -399,9 +399,14 @@ class mappy {
 				for (int y = windowY - 1; y <= windowY + 1; y++) {
 					if (x <= xMapWidth && y <= yMapLength) {
 						if (!((grid[y][y])->getPassable()) && ((grid[y][y])->getMaterial() != 10)) {
+							
+							int elevationHere = grid[x][y]->getElevation();//resets it back to the true elevation
 							delete grid[x][y];
 							grid[x][y] = NULL;
 							grid[x][y] = new mapSquare();
+							grid[x][y]->setElevation(elevationHere);//conserves elevation
+							
+							
 						} 
 					}
 				}
@@ -1087,9 +1092,11 @@ class mappy {
 			
 			if (equipSlot == "equippable") {//sets weapon accuracy, and armor evasion cost
 				madeItem.setAccuracy( (2 - heaviness) * 3);
+				madeItem.setQuickness( (2 - heaviness) * 3);
 			}
 			else {
 				madeItem.setEvasion( (2 - heaviness));
+				madeItem.setQuickness( (2 - heaviness));
 			}
 			
 			if (equipSlot == "equippable") {//sets material
@@ -3782,7 +3789,7 @@ class mappy {
 									madeItem.setEquipmentDamagePiercing(30);//sets damage type percentages
 								break;
 								case 6:
-									itemBaseName = "chian";
+									itemBaseName = "chain";
 									madeItem.setEquipmentBaseAttack((level * 5 * (heaviness) + rand() % level * 5));
 									madeItem.setEquipmentDamageBludgeoning(100);//sets damage type percentages
 									madeItem.setEquipmentDamageSlashing(0);//sets damage type percentages
@@ -4381,7 +4388,7 @@ class mappy {
 				switch (enchantmentType) {
 					case 0:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageFire(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageFire(level * (10) + rand() % level);
 						}
 						else {
 							madeItem.setEquipmentResistFire(level * (5) + rand() % level);
@@ -4391,7 +4398,7 @@ class mappy {
 						break;
 					case 1:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageCold(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageCold(level * (10) + rand() % level);
 						}
 						else {
 							madeItem.setEquipmentResistCold(level * (5) + rand() % level);
@@ -4400,7 +4407,7 @@ class mappy {
 						break;
 					case 2:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageLightning(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageLightning(level * (10) + rand() % level);
 						}
 						else {
 							madeItem.setEquipmentResistLightning(level * (5) + rand() % level);
@@ -4409,7 +4416,7 @@ class mappy {
 						break;
 					case 3:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageLight(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageLight(level * (10) + rand() % level);
 						}
 						else {
 							madeItem.setEquipmentResistLight(level * (5) + rand() % level);
@@ -4418,7 +4425,7 @@ class mappy {
 						break;
 					case 4:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageDark(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageDark(level * (10) + rand() % level);
 						}
 						else {
 							madeItem.setEquipmentResistDark(level * (5) + rand() % level);
@@ -4427,7 +4434,7 @@ class mappy {
 						break;
 					case 5:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamagePoison(level * (5) + rand() % level);
+							madeItem.setEquipmentDamagePoison(level * (10) + rand() % level);
 							itemSpecialName = "poisonous " + itemSpecialName;
 						}
 						else {
@@ -4438,7 +4445,7 @@ class mappy {
 						break;
 					case 6:
 						if (rand() % 10 == 0 || equipSlot == "equippable" ) {
-							madeItem.setEquipmentDamageManaEnergy(level * (5) + rand() % level);
+							madeItem.setEquipmentDamageManaEnergy(level * (10) + rand() % level);
 							itemSpecialName = "energetic " + itemSpecialName;
 						}
 						else {
@@ -4616,7 +4623,22 @@ class mappy {
 			madeItem.setEquipmentResistBludgeoning(madeItem.getEquipmentResistBludgeoning() + (madeItem.getEquipmentResistBludgeoning() * (totalMaterialQuality - 8) / 10) ); 
 			madeItem.setEquipmentResistSlashing(madeItem.getEquipmentResistSlashing() + (madeItem.getEquipmentResistSlashing() * (totalMaterialQuality - 8) / 10) );  
 			madeItem.setEquipmentResistPiercing(madeItem.getEquipmentResistPiercing() + (madeItem.getEquipmentResistPiercing() * (totalMaterialQuality - 8) / 10) );
-			 
+			
+			madeItem.setEquipmentDamageFire(madeItem.getEquipmentDamageFire() + (madeItem.getEquipmentDamageFire() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageCold(madeItem.getEquipmentDamageCold() + (madeItem.getEquipmentDamageCold() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageLightning(madeItem.getEquipmentDamageLightning() + (madeItem.getEquipmentDamageLightning() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageLight(madeItem.getEquipmentDamageLight() + (madeItem.getEquipmentDamageLight() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageDark(madeItem.getEquipmentDamageDark() + (madeItem.getEquipmentDamageDark() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamagePoison(madeItem.getEquipmentDamagePoison() + (madeItem.getEquipmentDamagePoison() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageManaEnergy(madeItem.getEquipmentDamageManaEnergy() + (madeItem.getEquipmentDamageManaEnergy() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageBludgeoning(madeItem.getEquipmentDamageBludgeoning() + (madeItem.getEquipmentDamageBludgeoning() * (totalMaterialQuality - 8) / 10) ); 
+			madeItem.setEquipmentDamageSlashing(madeItem.getEquipmentDamageSlashing() + (madeItem.getEquipmentDamageSlashing() * (totalMaterialQuality - 8) / 10) );  
+			madeItem.setEquipmentDamagePiercing(madeItem.getEquipmentDamagePiercing() + (madeItem.getEquipmentDamagePiercing() * (totalMaterialQuality - 8) / 10) );
+			
+			if (madeItem.getQuickness() > 0) {
+					madeItem.setQuickness(madeItem.getQuickness() + (madeItem.getQuickness() * (totalMaterialQuality - 8) / 10) );
+			}
+			
 			madeItem.setEquipmentBaseAttack(madeItem.getEquipmentBaseAttack() + (madeItem.getEquipmentBaseAttack() * (totalMaterialQuality - 8) / 10) ); 
 			
 			//price = 25*L^2 with 20% jumps for material quality
